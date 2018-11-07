@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Error from '../Common/Error';
 
+import ReactLoading from 'react-loading';
+
 export default class ChangePasswordModal extends Component {
   constructor(props) {
     super(props);
@@ -11,11 +13,13 @@ export default class ChangePasswordModal extends Component {
       indicator : '',
       confirmedNewPassword : '',
       newPassword : '',
-      key : ''
+      key : '',
+      loading : false
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.changePassword = this.changePassword.bind(this);
+    this.getPasswordKey = this.getPasswordKey.bind(this);
   }
 
   async handleInputs(e) {
@@ -29,9 +33,16 @@ export default class ChangePasswordModal extends Component {
     await this.props.changePassword(key, newPassword, confirmedNewPassword);
   }
 
+  async getPasswordKey() {
+    this.setState({ loading : true });
+    await this.props.getPasswordKey();
+    this.setState({ loading : false })
+  }
+
 
   render() {
     const { msg, indicator, visability } = this.props;
+    const { loading } = this.state;
     return (
       <div>    
         <div className="modal fade" id="elegantModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -61,8 +72,16 @@ export default class ChangePasswordModal extends Component {
                 <div style={{textAlign : 'center'}} className="md-form pb-3">
                   <input onChange={ this.handleInputs } name="key" type="text"  className="form-control validate"/>
                   <label data-error="wrong" data-success="right" for="Form-pass1">Key</label>
-                  <button style={{ display : visability }} onClick={ this.props.getPasswordKey } className="btn btn-success btn-sm">GET SECRET KEY</button>
+                  { loading
+                    ?
+                    <div className="d-flex justify-content-center">
+                      <ReactLoading type={'bars'} color={'#343a40'} height={'20%'} width={'15%'} />
+                    </div>
+                    :
+                    <button style={{ display : visability }} onClick={ this.getPasswordKey } className="btn btn-success btn-sm">GET SECRET KEY</button>
+                  }
                 </div>
+                
 
                 {msg
                   ?

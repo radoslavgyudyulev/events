@@ -9,19 +9,22 @@ const passportFacebook = passport.authenticate('facebookToken', { session: false
 
 module.exports = (app) => {
     // Authentications
-    app.post('/api/auth/signup', controllers.user.signUp);
-    app.post('/api/auth/signin', passportSignIn, controllers.user.signIn);
-    app.post('/api/auth/google', passportGoogle, controllers.user.googleOAuth);
-    app.post('/api/auth/facebook', passportFacebook, controllers.user.facebookOAuth);
+    app.post('/api/auth/signup', controllers.auth.signUp);
+    app.post('/api/auth/signin', passportSignIn, controllers.auth.signIn);
+    app.post('/api/auth/google', passportGoogle, controllers.auth.googleOAuth);
+    app.post('/api/auth/facebook', passportFacebook, controllers.auth.facebookOAuth);
 
     // All about users friends 
+    app.post('/api/user/friends/find', passportJWT, controllers.friends.findFriends);
+    app.post('/api/user/request/send', passportJWT, controllers.friends.requestSend);
+    app.get('/api/user/request/get', passportJWT, controllers.friends.requestGet);
+    app.post('/api/user/request/answer', passportJWT, controllers.friends.requestAnswer);
+    app.get('/api/user/friends/yourFriends', passportJWT, controllers.friends.yourFriends);
+    app.post('/api/user/friends/remove', passportJWT, controllers.friends.remove);
+    app.get('/api/user/friends/search', passportJWT, controllers.friends.search);
+
+    // All about user
     app.get('/api/user/profile', passportJWT, controllers.user.profile);
-    app.post('/api/user/friends/find', passportJWT, controllers.user.findFriends);
-    app.post('/api/user/request/send', passportJWT, controllers.user.requestSend);
-    app.get('/api/user/request/get', passportJWT, controllers.user.requestGet);
-    app.post('/api/user/request/answer', passportJWT, controllers.user.requestAnswer);
-    app.get('/api/user/friends/yourFriends', passportJWT, controllers.user.yourFriends);
-    app.post('/api/user/friends/remove', passportJWT, controllers.user.remove);
     app.get('/api/user/delete', passportJWT, controllers.user.deleteProfile);
     app.get('/api/user/change/key', passportJWT, controllers.user.keyChecker);
     app.post('/api/user/changePass', passportJWT, controllers.user.changePass);

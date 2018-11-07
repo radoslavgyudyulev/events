@@ -1,28 +1,14 @@
-function checkMethod(user, arr) {
-    if (user.local || user.google || user.facebook) {
-        arr.push(`${user.id}:${user.local.username
-            ? user.local.username
-            : user.google.username
-            ||
-            user.google.username
-                ? user.google.username
-                : user.facebook.username ||
-            user.facebook.username
-                    ? user.facebook.username
-                    : ''
-        }:${user.local.email
-            ? user.local.email
-            : user.google.email
-            ||
-            user.google.email
-                ? user.google.email
-                : user.facebook.email ||
-            user.facebook.email
-                    ? user.facebook.email
-                    : ''}`);
+function checkMethod(user, UserData) {
+    let users = '';
+    if (user.method === 'local') {
+        users = new UserData(user.id, user.local.email, user.local.username);
+    } else if (user.method === 'google') {
+        users = new UserData(user.google.id, user.google.email, user.google.username);
+    } else if (user.method === 'facebook') {
+        users = new UserData(user.facebook.id, user.facebook.email, user.facebook.username);
     }
 
-    return arr;
+    return users;
 };
 
 module.exports = checkMethod;

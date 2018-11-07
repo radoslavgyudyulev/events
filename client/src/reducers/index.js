@@ -5,8 +5,8 @@ import friendsReducer from './friends';
 import eventsReducer from './events';
 
 export default combineReducers({
-    form : formReducer,
-    auth : authReducer,
-    friends : friendsReducer,
-    events : eventsReducer
+  form : formReducer,
+  auth : authReducer,
+  friends : friendsReducer,
+  events : eventsReducer
 });

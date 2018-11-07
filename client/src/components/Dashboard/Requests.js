@@ -1,30 +1,79 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import NoData from '../Common/NoData';
 
-const Requests = props => {
-  const { invites, friendsReqAnswer } = props;
-  return (
-    <div className="mt-3">
-      {invites.length > 0 
-        ?
-        invites.map(data => {
-          return (
-            <div id={ data[2] } key={ data[2] } className="pt-1">
-              <ul className="list-group">
-                <li id={ data[2] }  class="list-group-item d-flex justify-content-between align-items-center shadow mb-1">
-                  { data[1] }  <small>{ data[0] }</small>
-                  <span onClick={ friendsReqAnswer } class="custom-badge badge badge-success badge-pill waves-effect">Accept</span>
-                  <span onClick={ friendsReqAnswer } class="custom-badge badge badge-danger badge-pill waves-effect">Decline</span>
-                </li>
-              </ul>
-            </div>
-          ); 
-        }) 
-            
-        : <NoData data={"There is no requests yet!"}/> }
-    </div>
-  );
-};
+import Auth from '../Common/Auth';
 
-export default Requests;
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
+
+class Requests extends Component {
+  constructor(props) {
+    super(props); 
+
+    this.state = {
+      invites: []
+    };
+
+    this.friendsRequests = this.friendsRequests.bind(this);
+    this.friendsReqAnswer = this.friendsReqAnswer.bind(this);
+
+  }
+
+  componentDidMount() {
+    this.friendsRequests();
+  }
+  
+
+  async friendsRequests() {
+    let token = Auth.getToken();
+    let data = await this.props.getRequest(token);
+    this.setState({invites : data.payload.usersRequests});
+  }
+
+  async friendsReqAnswer(e) {
+    let answer = e.target.id;
+    
+    let token = Auth.getToken();
+    let id = e.target.parentElement.id;
+    let element = e.target.parentNode;
+    element.parentNode.removeChild(element);
+
+    await this.props.friendReqAnswer(token, id, answer);   
+  }
+
+  render() {
+    const { invites } = this.state;
+    return (
+      <div className="mt-3">
+        {invites.length > 0 
+          ?
+          invites.map(data => {
+            return (
+              <div id={ data.id } key={ data.id } className="pt-1">
+                <ul className="list-group">
+                  <li id={ data.id }  class="list-group-item d-flex justify-content-between align-items-center shadow mb-1">
+                    { data.username }  <small>{ data.email }</small>
+                    <span onClick={ this.friendsReqAnswer } id="yes" class="custom-badge badge badge-success badge-pill waves-effect">Accept</span>
+                    <span onClick={ this.friendsReqAnswer } id="no" class="custom-badge badge badge-danger badge-pill waves-effect">Decline</span>
+                  </li>
+                </ul>
+              </div>
+            ); 
+          }) 
+            
+          : <NoData data={"There is no requests yet!"}/> }
+      </div>
+    );
+  }
+}
+
+
+function mapStateToProps(state) {
+  return {
+    errorMessage: state.auth.errorMessage,
+  
+  };
+}
+
+export default connect(mapStateToProps, actions)(Requests);

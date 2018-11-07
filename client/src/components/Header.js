@@ -38,10 +38,10 @@ class Header extends Component {
   async getProfile() {
     let token = Auth.getToken();
     let data = await this.props.getProfile(token);
-        
+    
     this.setState({
-      username: data.data.currentUserUsername,
-      email: data.data.currentUserEmail,
+      username: data.data.user.username,
+      email: data.data.user.email,
     });
   }
    

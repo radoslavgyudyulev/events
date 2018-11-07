@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const CalendarEvent = require('../models/CalendarEvent');
 const checkMethod = require('../utilities/checkMethod');
+const UserData = require('../utilities/UserData');
 
 async function createCalendar(currentUserId, data) {
     try {
@@ -72,34 +73,11 @@ async function createCalendar(currentUserId, data) {
     }
 }
 
-function validateParticipants(data) {
-    let lastParticipant = [];
-    let firstParticipants = [];
-
-    for (let i = 0; i < data.length / 2; i++) {
-        lastParticipant.push(data[i]);   
-    }
-    for (let j = data.length - 1; j > data.length / 2 - 1; j--) {
-        firstParticipants.push(data[j]);
-    }
-
-    for (let p of lastParticipant) {
-        if (firstParticipants.toString().includes(p)) {
-            let index = data.indexOf(p);
-            data.splice(index, 1);
-        } 
-    }
-
-    return data;
-}
-
 module.exports = {
     create: async (req, res) => {
         let currentUserId = req.user.id;
         let data = req.body;
         let eventId = '';
-
-        data.participants = validateParticipants(data.participants);
 
         try {
             if (data.numberOfParticipants < data.participants.length) {
@@ -180,11 +158,11 @@ module.exports = {
 
             for (let event of events) {
                 let helper = [];
-                checkMethod(event.creator, helper);
+                helper.push(checkMethod(event.creator, UserData));
 
                 let participants = [];
                 for (let participant of event.participants) {
-                    checkMethod(participant, participants);
+                    participants.push(checkMethod(participant, UserData));
                 }
 
                 let eventList = {
@@ -224,7 +202,7 @@ module.exports = {
                 let participants = [];
                 for (let participant of event.participants) {
                     let users = await User.findById(participant);
-                    checkMethod(users, participants);
+                    participants.push(checkMethod(users, UserData));
                 }
 
                 let helper = {
@@ -261,9 +239,7 @@ module.exports = {
                 let helper = [];
 
                 let user = await User.findById(event.creator);
-                checkMethod(user, helper);
-
-                helper = helper.toString().split(':')[1];
+                helper.push(checkMethod(user, UserData));
 
                 let invites = {
                     eventId: event.id,

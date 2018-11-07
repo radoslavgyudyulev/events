@@ -25,9 +25,10 @@ export default class Event extends Component {
 
   render() {
     let { events, joinEvent, leaveEvent, errorMsg, successMsg } = this.props;
+    
     return (
       <div className="container">
-        { events.map(event => {
+        {/* { events.map(event => {
           return (
             <div key={ event.eventId } className="event-panel mb-5">
               <ReactTooltip />
@@ -110,7 +111,7 @@ export default class Event extends Component {
               </div>
             </div>
           );
-        })}
+        })} */}
       </div>
     );
   }

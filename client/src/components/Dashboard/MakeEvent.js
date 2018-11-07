@@ -5,10 +5,15 @@ import Popup from "reactjs-popup";
 import Auth from '../Common/Auth';
 
 import Calendar from 'rc-calendar';
-import 'rc-calendar/assets/index.css'
+import 'rc-calendar/assets/index.css';
+
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
+
+import InviteParticipants from '../Common/InviteParticipants';
 
 
-export default class MakeEvent extends Component {
+class MakeEvent extends Component {
 
    constructor(props) {
       super(props);
@@ -20,7 +25,8 @@ export default class MakeEvent extends Component {
          title: '',
          description: '',
          hour: '',
-         min: ''
+         min: '',
+         yourFriends : [],
       };
 
       this.getPickerValue = this.getPickerValue.bind(this);
@@ -29,7 +35,13 @@ export default class MakeEvent extends Component {
       this.getFriendId = this.getFriendId.bind(this);
       this.isPrivate = this.isPrivate.bind(this);
       this.createEvent = this.createEvent.bind(this);
+      
    }
+
+   componentDidMount() {
+       this.yourProfile();
+   }
+   
 
    onChange = date => this.setState({ date });
 
@@ -81,13 +93,21 @@ export default class MakeEvent extends Component {
             participants: this.state.ids
         }
         
-        let response = await this.props.createdEvent(token, data);
-        console.log(response)
+        await this.props.createdEvent(token, data);
     }
 
+    async yourProfile() {
+        let token = Auth.getToken();
+        let { skipFriendsData, limitFriendsData } = this.state;
+    
+        let data = await this.props.yourFriends(token, skipFriendsData, limitFriendsData);
+          
+        this.setState({ yourFriends : data.payload.friends }); 
+      }
+
    render() {
-      const { date, range, isPrivate, ids } = this.state;
-      const { yourFriends } = this.props;
+      const { date, range, isPrivate, ids, yourFriends } = this.state;
+
       return (
          <div className="events-wrapper mt-3">
 
@@ -157,23 +177,9 @@ export default class MakeEvent extends Component {
                         <input name="hour" type="number" min="0" max="23" onChange={ this.handleInputs } placeholder="Hour"/>:
                         <input name="min" type="number" min="0" max="59" onChange={ this.handleInputs } placeholder="Minute"/>
                     </div>
-                    <Popup trigger={<button className="btn">Invite Participants</button>} position="bottom center">
-                <div>
-                { yourFriends.map(data => {
-            return (
-               <div id={ data[2] } key={ data[2] } className="pt-1">
-                  <ul className="list-group shadow mb-1">
-                     <li id={ data[2] }  className="list-group-item d-flex justify-content-between align-items-center">
-                        { data[1] }  <small>{ data[0] }</small>
-                        <span onClick={this.getFriendId} className="custom-badge badge badge-danger badge-pill">Invite</span>
-                     </li>
-                  </ul>
-               </div>
-            ); 
-         }) 
-         }
-               </div>
-                    </Popup>
+                    <InviteParticipants 
+                        yourFriends={ yourFriends }
+                        getFriendId={ this.getFriendId } />
               </div>
 
             </div>
@@ -186,3 +192,13 @@ export default class MakeEvent extends Component {
       );
    }
 }
+
+
+function mapStateToProps(state) {
+    return {
+      errorMessage: state.auth.errorMessage
+    };
+  }
+  
+  export default connect(mapStateToProps, actions)(MakeEvent);
+  
