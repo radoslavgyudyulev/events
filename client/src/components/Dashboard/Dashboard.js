@@ -26,8 +26,8 @@ class Dashboard extends Component {
     this.state = {
       loading : false,
       eventsRequestsLength : '',
-      userRequestsLength : ''
-
+      userRequestsLength : '',
+      activeTab : 'yourFriends'
     };
     this.counter = this.counter.bind(this);
   }
@@ -36,12 +36,9 @@ class Dashboard extends Component {
     this.counter();
   }
 
-  async componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     console.log(nextProps);
-    await nextProps;
-    if(nextProps.userRequestsLength) {
-      nextProps = this.getRequest();
-    }
+  
   }
   
 
@@ -60,7 +57,7 @@ class Dashboard extends Component {
   }
   
   render() {
-    const { loading, eventsRequestsLength, userRequestsLength } = this.state;
+    const { loading, eventsRequestsLength, userRequestsLength, activeTab } = this.state;
     return (
       <div>
         { loading 
@@ -71,48 +68,48 @@ class Dashboard extends Component {
           : 
           <div className="row">
             <Tabs
-              defaultTab="five"
+              defaultTab={ activeTab }
             >
               <TabList>
                 <ReactTooltip />
-                <Tab data-tip="Your Friends" tabFor="one"><img src="images/friends.png" alt="" srcset=""/>
+                <Tab data-tip="Your Friends" tabFor="yourFriends"><img src="images/friends.png" alt="" srcset=""/>
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Find Friends" tabFor="two"><img src="images/users.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Find Friends" tabFor="findFriends"><img src="images/users.png" alt="" srcset=""/></Tab>
                 <ReactTooltip />
-                <Tab data-tip="Friends Request" tabFor="three"><img src="images/maps-and-flags.png" alt="" srcset=""/> 
+                <Tab data-tip="Friends Request" tabFor="friendsRequest"><img src="images/maps-and-flags.png" alt="" srcset=""/> 
                   <span className="badge badge-success">{ userRequestsLength ? userRequestsLength : '' }</span>
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Your Events" tabFor="four"><img src="images/event.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Your Events" tabFor="yourEvents"><img src="images/event.png" alt="" srcset=""/></Tab>
                 <ReactTooltip />
-                <Tab data-tip="Events you have been invited" tabFor="five"><img src="images/invitation.png" alt="" srcset=""/>
+                <Tab data-tip="Events you have been invited" tabFor="eventInvites"><img src="images/invitation.png" alt="" srcset=""/>
                   <span className="badge badge-success">{eventsRequestsLength ? eventsRequestsLength : ''}</span>
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Create Event" tabFor="six"><img src="images/calendar2.png" alt="" srcset=""/></Tab>
-                <Tab data-tip="Profile" tabFor="seven"><img src="images/profile.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Create Event" tabFor="makeEvent"><img src="images/calendar2.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Profile" tabFor="profile"><img src="images/profile.png" alt="" srcset=""/></Tab>
               </TabList>
 
-              <TabPanel tabId="one">
+              <TabPanel tabId="yourFriends">
                 <YourFriends />
               </TabPanel>
-              <TabPanel tabId="two">
+              <TabPanel tabId="findFriends">
                 <FindFriends />
               </TabPanel>
-              <TabPanel tabId="three">
+              <TabPanel tabId="friendsRequest">
                 <Requests />
               </TabPanel>
-              <TabPanel tabId="four">
+              <TabPanel tabId="yourEvents">
                 <Events/>
               </TabPanel>
-              <TabPanel tabId="five">
+              <TabPanel tabId="eventInvites">
                 <Invites />
               </TabPanel> 
-              <TabPanel tabId="six">
-                <MakeEvent />
+              <TabPanel tabId="makeEvent">
+                <MakeEvent/>
               </TabPanel>
-              <TabPanel tabId="seven">
+              <TabPanel tabId="profile">
                 <Profile />
               </TabPanel>  
             </Tabs>
@@ -127,7 +124,6 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.errorMessage,
-    staff : state.staff
   };
 }
 

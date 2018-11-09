@@ -15,12 +15,11 @@ const FriendsList = props => {
       {friendList
         ?  
         friendList.map(friend => {
-          let name = friend.username.toLowerCase();
           let email = friend.email;
           let id = friend.id;
           return (
-            <ul key={ id } className="list-group">
-              <li id={ id }  className="list-group-item d-flex justify-content-between align-items-center shadow mb-1">
+            <ul key={ id } id={ id } className="list-group">
+              <li className="list-group-item d-flex justify-content-between align-items-center shadow mb-1">
                 { friend.username } <small>{ email }</small>
                 <span onClick={ inviteFriends } className="custom-badge badge badge-primary badge-pill waves-effect">Invite</span>
               </li>
@@ -33,7 +32,6 @@ const FriendsList = props => {
       {friendReq
         ?  
         friendReq.map(friend => {
-          let name = friend.username.toLowerCase();
           let email = friend.email;
           let id = friend.id;
           

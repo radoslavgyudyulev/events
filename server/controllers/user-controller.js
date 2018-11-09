@@ -94,6 +94,12 @@ module.exports = {
 
             let currentUser = await User.findById(currentUserId);
 
+            if (currentUser.method !== 'local') {
+                let loginMethod = currentUser.method;
+
+                return res.status(200).json({ errorMessage: `You are logged with ${loginMethod.toUpperCase()}.You are not able to change your password!` });
+            }
+
             let userEmail = currentUser.local.email;
             let username = currentUser.local.username;
 

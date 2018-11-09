@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "material-ui-time-picker": "^1.0.0",
     "mdbreact": "^4.8.2",
     "rangeslider.js": "^2.3.2",
     "rc-calendar": "^9.7.10",

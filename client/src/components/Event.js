@@ -28,7 +28,7 @@ export default class Event extends Component {
     
     return (
       <div className="container">
-        {/* { events.map(event => {
+        { events.map(event => {
           return (
             <div key={ event.eventId } className="event-panel mb-5">
               <ReactTooltip />
@@ -52,7 +52,7 @@ export default class Event extends Component {
                         </div>
                       </div>
 
-                      <div className="col-lg-2">
+                      <div className="col-lg-2.5">
                         <div className="small-clock">
                           <div className="small-clock-header">hour</div>
                           <p>{ event.hour.split(':')[0] }</p>
@@ -96,8 +96,8 @@ export default class Event extends Component {
                       </div>
                     </div>
                     <div style={{float : 'right'}}>
-                      <small style={{display : 'block'}}><strong>creator:</strong> { event.creator[0].split(':')[1] }</small>
-                      <small>({ event.creator[0].split(':')[2] })</small>
+                      <small style={{display : 'block'}}><strong>creator:</strong> { event.creator[0].username }</small>
+                      <small>({ event.creator[0].email })</small>
                     </div>
 
                     <div style={{ float: 'left' }}>
@@ -111,7 +111,7 @@ export default class Event extends Component {
               </div>
             </div>
           );
-        })} */}
+        })}
       </div>
     );
   }

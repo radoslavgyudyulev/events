@@ -45,8 +45,9 @@ class Invites extends Component {
     let data = await this.props.invitesAnswer(token, id, answer);
 
     if(data) {
-      this.setState({ loading : false });
       this.getYourInvites();
+      await this.props.yourFriends(token);
+      this.setState({ loading : false });
     }
 
   }

@@ -59,12 +59,25 @@ class FindFriends extends Component {
   }
 
   async inviteFriends(e) {
-    let id = e.target.parentElement.id;
+    let id = e.target.parentNode.parentNode.id;
     e.target.innerHTML = 'Request sended!';
     e.target.classList.add("badge-success");
     let token = Auth.getToken();
+    let { skip, limit } = this.state;
 
-    await this.props.inviteFriend(token, id);
+
+    let data = await this.props.inviteFriend(token, id);
+
+    if (data) {
+      await this.props.findFriends(token, limit, skip);
+
+      this.setState({friendList : data.payload.users, 
+        friendReq : data.payload.yourSendedReq, 
+        loading : false,
+        allFriends: data.payload.allFriends,
+      });
+    }
+    
   }
 
   showMoreFriends() {

@@ -22,6 +22,8 @@ export const GET_YOUR_INVITES = 'GET_YOUR_INVITES';
 export const INVITES_ANSWER = 'INVITES_ANSWER';
 export const JOIN_EVENT = 'JOIN_EVENT';
 export const LEAVE_EVENT = 'DISJOIN_EVENT';
+export const DELETE_EVENT = 'DELETE_EVENT';
+export const EDIT_EVENT = 'EDIT_EVENT';
 
 
 

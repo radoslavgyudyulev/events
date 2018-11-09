@@ -23,6 +23,9 @@ ReactDOM.render(
     },
     friends : {
       friends : ''
+    },
+    events: {
+      activeTab: 'yourEvents'
     }
   }, applyMiddleware(reduxThunk))}>
     <BrowserRouter>

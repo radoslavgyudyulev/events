@@ -16,8 +16,8 @@ const Table = props => {
           return (
             <tr key={x}>
               <th scope="row">{i + 1}</th>
-              <td>{x.split(':')[1]}</td>
-              <td>{x.split(':')[2]}</td>
+              <td>{x.username}</td>
+              <td>{x.email}</td>
             </tr>
           );
         }) }

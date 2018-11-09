@@ -2,6 +2,7 @@ const User = require('../models/User');
 const CalendarEvent = require('../models/CalendarEvent');
 const checkMethod = require('../utilities/checkMethod');
 const UserData = require('../utilities/UserData');
+const sendMail = require('../utilities/mailSender');
 
 async function createCalendar(currentUserId, data) {
     try {
@@ -92,15 +93,12 @@ module.exports = {
         }
     },
     editEvent: async (req, res) => {
-        let data = req.body;
+        let data = req.body.data;
         
         try {
             let event = await CalendarEvent.findById(data.eventId).populate('participants');
             if (!event) {
                 return res.status(403).json({ message: 'You have not create a Event!' });
-            }
-            if (data.numberOfParticipants < data.participants.length) {
-                return res.status(200).json({ message: 'Participants are more then a number you choose!' });
             }
 
             if (data.title && typeof data.title === 'string') {  event.title = data.title; }
@@ -120,17 +118,6 @@ module.exports = {
             }
 
             if (data.numberOfParticipants) { event.numberOfParticipants = Number(data.numberOfParticipants); }
-
-            if (data.participants) { 
-                for (let participant of data.participants) {
-                    let user = await User.findById(participant);
-
-                    user.invitedEvents.push(event.id);
-
-                    await user.save();
-                }
-                
-            }
 
             await event.save();
 
@@ -354,6 +341,57 @@ module.exports = {
             await event.save();
             
             res.status(200).json({ successMessage: 'Successfully leaved the Event!' });
+        } catch (error) {
+            res.status(404).json({ error: error });
+        }
+    },
+    delete: async (req, res) => {
+        let eventId = req.body.id;
+
+        try {
+            let event = await CalendarEvent.findById(eventId).populate('participants');
+            let creator = await User.findById(event.creator);
+
+            let creatorName = '';
+            if (creator.method === 'local') {
+                creatorName = creator.local.username;
+            } else if (creator.method === 'google') {
+                creatorName = creator.google.username;
+            } else if (creator.method === 'facebook') {
+                creatorName = creator.facebook.username;
+            }
+
+            let index = creator.createdEvents.toString().indexOf(eventId);
+            creator.createdEvents.splice(index, 1);
+
+            await creator.save();
+
+            let allUsers = await User.find().where('invitedEvents').equals(eventId);
+
+            if (allUsers) {
+                for (let user of allUsers) {
+                    let index = user.invitedEvents.toString().indexOf(eventId);
+                    user.invitedEvents.splice(index, 1);
+
+                    await user.save();
+                }
+            }
+
+            if (event.participants) {
+                let usersEmails = [];
+                
+                for (let participant of event.participants) {
+                    let options = participant.local.email || participant.google.email || participant.facebook.email;
+                    usersEmails.push(options);
+
+                }
+                sendMail(usersEmails, `${event.title}`, `The ${event.title} event witch you have been part of was deleted by ${creatorName}!`);
+            }
+ 
+            await CalendarEvent.findByIdAndDelete(eventId);
+
+            res.status(200).json({ successMessage: 'Your event was successfully deleted!' });
+            
         } catch (error) {
             res.status(404).json({ error: error });
         }

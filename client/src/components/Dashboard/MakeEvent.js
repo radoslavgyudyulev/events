@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-//import Calendar from 'react-calendar';
-import Popup from "reactjs-popup";
 import Auth from '../Common/Auth';
 
 import Calendar from 'rc-calendar';
 import 'rc-calendar/assets/index.css';
+import TimeInput from 'material-ui-time-picker';
+import ReactLoading from 'react-loading';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -24,9 +24,11 @@ class MakeEvent extends Component {
          ids: [],
          title: '',
          description: '',
-         hour: '',
-         min: '',
          yourFriends : [],
+         time : '',
+         clock : '',
+         eventCondition : 'Public',
+         loading : false
       };
 
       this.getPickerValue = this.getPickerValue.bind(this);
@@ -35,6 +37,7 @@ class MakeEvent extends Component {
       this.getFriendId = this.getFriendId.bind(this);
       this.isPrivate = this.isPrivate.bind(this);
       this.createEvent = this.createEvent.bind(this);
+      this.onTimeChange = this.onTimeChange.bind(this);
       
    }
 
@@ -44,6 +47,14 @@ class MakeEvent extends Component {
    
 
    onChange = date => this.setState({ date });
+
+   onTimeChange(time) {
+        let hour = Number(this.dateSplitter(time).time.split(':')[0]) + 2;
+        let min = this.dateSplitter(time).time.split(":")[1];
+        let clock = `${hour}:${min}`
+
+        this.setState({ clock : clock })
+   }    
 
    getPickerValue = (value) => {
     console.log(value);
@@ -78,8 +89,11 @@ class MakeEvent extends Component {
     }
 
     isPrivate() {
-        this.setState({ isPrivate : !this.state.isPrivate})
+        let condition = !this.state.isPrivate ? 'Private' : 'Public';
+        this.setState({ isPrivate : !this.state.isPrivate, eventCondition : condition})
     }
+
+    
 
     async createEvent() {
         let token = Auth.getToken();
@@ -87,13 +101,15 @@ class MakeEvent extends Component {
             title: this.state.title,
             description: this.state.description,
             date: this.dateSplitter(this.state.date).date,
-            hour: `${this.state.hour}:${this.state.min}`,
+            hour: this.state.clock,
             isPrivate: this.state.isPrivate,
             numberOfParticipants: this.state.range,
             participants: this.state.ids
         }
         
+        this.setState({ loading : true })
         await this.props.createdEvent(token, data);
+        this.setState({ loading : false })
     }
 
     async yourProfile() {
@@ -105,19 +121,21 @@ class MakeEvent extends Component {
         this.setState({ yourFriends : data.payload.friends }); 
       }
 
-   render() {
-      const { date, range, isPrivate, ids, yourFriends } = this.state;
 
+
+   render() {
+      const { date, range, eventCondition, loading, yourFriends } = this.state;
       return (
          <div className="events-wrapper mt-3">
 
             <div className="row">
-              <div className="col-lg-4">
-                <Calendar onChange={this.onChange}/>
-              </div>
 
               <div className="col-lg-4">
-                <form>
+                <Calendar onChange={ this.onChange }/>
+              </div>
+
+              <div className="col-lg-4 fixed-height">
+               
                     <div className="card shadow-lg mb-3">
                         <div className="card-body">
                             <h3 className="text-sm-center">
@@ -128,40 +146,36 @@ class MakeEvent extends Component {
 
                     <div className="card shadow-lg mb-3">
                         <div className="card-body">
-                        <div className="text-sm-center form-group">
-                        <div class="md-form">
-                            <input name="title" onChange={ this.handleInputs } type="text" id="form1" class="form-control"/>
-                            <label for="form1">Title</label>
+                          <div className="text-sm-center form-group">
+                            <div className="md-form">
+                                <input name="title" onChange={ this.handleInputs } type="text" id="form1" class="form-control"/>
+                                <label for="form1">Title</label>
+                            </div>
+                           </div>
+
+                            <div class="md-form">
+                                <textarea onChange={ this.handleInputs } name="description"  type="text" id="form10" class="md-textarea form-control" rows="1.9"></textarea>
+                                <label for="form10">Description</label>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="md-form">
-                        <textarea onChange={ this.handleInputs } name="description"  type="text" id="form10" class="md-textarea form-control" rows="3"></textarea>
-                        <label for="form10">Description</label>
-                    </div>
-                        </div>
-                    </div>
-
-
-        
-                </form>
               </div>
 
-              <div className='col-lg-4'>
-                    <div className="custom-control custom-checkbox">
-                        <input onChange={ this.isPrivate } type="checkbox" name="private" className="custom-control-input" id="customCheck1"/>
-                        <label className="custom-control-label" htmlFor="customCheck1">Private</label>
+              <div className='col-lg-4 card shadow-lg center fixed-height'>
+                    <div>
+                        <cite>Your event is now { eventCondition }</cite>
                     </div>
-                    {/* <label class="bs-switch">
-                    <input type="checkbox"/>
-                    <span class="slider round"></span>
-                    </label> */}
 
                     <div>
+                        <label class="bs-switch">
+                        <input onChange={ this.isPrivate } type="checkbox"/>
+                        <span class="slider round"></span>
+                        </label>
+                    </div>
+                   
+
+                    <div className="p-2">
                         <p>{ range } person</p>
-                        {/* <form class="range-field my-4 w-25">
-                            <input type="range" min="0" max="100" />
-                        </form> */}
                         <input
                             type="range"
                             onChange={ this.handleInputs }
@@ -172,21 +186,29 @@ class MakeEvent extends Component {
                             value={ range }                  
                             data-orientation="vertical" />
                     </div>
-                    
-                    <div>
-                        <input name="hour" type="number" min="0" max="23" onChange={ this.handleInputs } placeholder="Hour"/>:
-                        <input name="min" type="number" min="0" max="59" onChange={ this.handleInputs } placeholder="Minute"/>
-                    </div>
+
+                    <TimeInput
+                    mode='24h'
+                    onChange={(time) => this.onTimeChange(time)}
+                    />
+                    <div className="pt-5">
                     <InviteParticipants 
                         yourFriends={ yourFriends }
                         getFriendId={ this.getFriendId } />
+                    </div>    
               </div>
 
             </div>
 
+            { loading 
+          ?
+          <div className="d-flex justify-content-center">
+            <ReactLoading type={'bars'} color={'#343a40'} height={'20%'} width={'15%'} />
+          </div>
+          :
             <div className="center">
-                <button onClick={this.createEvent} type="button" className="btn btn-outline-success waves-effect">Create your event</button>
-            </div>
+                <button onClick={this.createEvent} type="button" className="btn btn-outline-success waves-effect mt-4 mb-4">Create your event</button>
+            </div> }
             
          </div>
       );
@@ -196,7 +218,7 @@ class MakeEvent extends Component {
 
 function mapStateToProps(state) {
     return {
-      errorMessage: state.auth.errorMessage
+        errorMessage: state.auth.errorMessage
     };
   }
   

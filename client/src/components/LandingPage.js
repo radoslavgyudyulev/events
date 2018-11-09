@@ -81,7 +81,7 @@ class LandingPage extends Component {
   render() {
     const { loading, isParticipant, events } = this.state;
     return (
-      <div className="container">
+      <div className="">
         {loading 
           ?
           <div className="d-flex justify-content-center">

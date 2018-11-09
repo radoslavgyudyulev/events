@@ -7,6 +7,8 @@ import {
   INVITES_ANSWER,
   JOIN_EVENT,
   LEAVE_EVENT,
+  DELETE_EVENT,
+  EDIT_EVENT
 } from './types';
 
 
@@ -161,6 +163,54 @@ export const leaveEvent = (token, eventId) => {
 
       return dispatch({
         type : LEAVE_EVENT,
+        payload : response.data
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+
+export const deleteEvent = (token, eventId) => {
+  return async dispatch => {
+    try {
+      const response = await axios('http://localhost:5000/api/event/delete', {
+        method : 'POST',
+        headers: {
+          'authorization': token
+        },
+        data: {
+          id : eventId,
+        }
+      });
+
+      return dispatch({
+        type : DELETE_EVENT,
+        payload : response.data
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+
+export const editEvent = (token, data) => {
+  return async dispatch => {
+    try {
+      const response = await axios('http://localhost:5000/api/event/edit', {
+        method : 'POST',
+        headers: {
+          'authorization': token
+        },
+        data: {
+          data : data,
+        }
+      });
+
+      return dispatch({
+        type : EDIT_EVENT,
         payload : response.data
       });
     } catch (error) {

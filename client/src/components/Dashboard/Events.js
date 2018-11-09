@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip';
 import NoData from '../Common/NoData';
 import ModalCenter from '../Common/ModalCenter';
 import Modal from '../Common/Modal';
+import DeleteEvent from '../Common/DeleteEvent';
 
 import Auth from '../Common/Auth';
 
@@ -17,7 +18,10 @@ class Events extends Component {
     
     this.state = {
       allCreatedEvents : [],
+      loading : true
     };
+
+    this.deleteEvent = this.deleteEvent.bind(this);
   }
 
   componentDidMount() {
@@ -50,6 +54,15 @@ class Events extends Component {
   }
 
 
+  async deleteEvent(e) {
+    let token = Auth.getToken();
+    let eventId = e.target.parentNode.id;
+
+    
+    let data = await this.props.deleteEvent(token, eventId);
+
+    // console.log(data);
+  }
 
   render() {
     const { allCreatedEvents } = this.state;
@@ -61,6 +74,7 @@ class Events extends Component {
           allCreatedEvents.map(event => {
             return (
               <div key={ event.eventId } className="event-panel mb-5">
+                <DeleteEvent eventId={ event.eventId } deleteEvent={ this.deleteEvent } />
                 <ReactTooltip />
                 {event.isPrivate 
                   ?
@@ -96,7 +110,7 @@ class Events extends Component {
 
                         <div className="col-lg-4">
                           <p>{ event.description }</p>
-                          <ModalCenter />
+                          <ModalCenter event={ event }/>
                         </div>
 
                         <div className="col-lg-3">

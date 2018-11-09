@@ -38,6 +38,7 @@ module.exports = (app) => {
     app.post('/api/event/invites/answer', passportJWT, controllers.event.invitesAnswer);
     app.post('/api/event/join', passportJWT, controllers.event.joinEvent);
     app.post('/api/event/leave', passportJWT, controllers.event.leaveEvent);
+    app.post('/api/event/delete', passportJWT, controllers.event.delete);
 
     app.get('*', (req, res) => {
         res.status(404).json({ message: 'Not found!' });

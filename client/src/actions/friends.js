@@ -55,9 +55,10 @@ export const inviteFriend = (token, id) => {
          
          
       return dispatch({
-        type : INVITE_FRIEND,
+        type : FIND_FRIENDS,
         payload : response
       });
+
      
     } catch(err) {
       //  dispatch({

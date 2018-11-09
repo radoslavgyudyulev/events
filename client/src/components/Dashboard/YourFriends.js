@@ -37,9 +37,8 @@ class YourFriends extends Component {
 
   async yourProfile() {
     let token = Auth.getToken();
-    let { skipFriendsData, limitFriendsData } = this.state;
-
-    let data = await this.props.yourFriends(token, skipFriendsData, limitFriendsData);
+  
+    let data = await this.props.yourFriends(token);
     
     this.setState({ yourFriends : data.payload.friends }); 
   }

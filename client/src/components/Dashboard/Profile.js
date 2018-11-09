@@ -30,7 +30,7 @@ class Profile extends Component {
     const data = await this.props.getPasswordKey(token);
     
     if(data.payload.errorMessage) {
-      this.setState({ msg : 'Something went wrong...', indicator : 'alert alert-danger', visability : 'none'});
+      this.setState({ msg : data.payload.errorMessage, indicator : 'alert alert-danger', visability : 'none'});
     } else if(data.payload.successMessage) {
       this.setState({ msg : data.payload.successMessage, indicator : 'alert alert-success', visability : 'none'});
     }
@@ -57,7 +57,6 @@ class Profile extends Component {
       Auth.deauthenticateUser();
       window.location.reload();
     }
-    console.log(data);
   }
 
   
@@ -76,7 +75,7 @@ class Profile extends Component {
               indicator={ indicator }
               visability={ visability }
             />
-            <DeleteAccount deleteAccount={ this.deleteAccount }/>
+            <DeleteAccount deleteAccount={ this.deleteAccount } />
           </div>
 
         </div>
