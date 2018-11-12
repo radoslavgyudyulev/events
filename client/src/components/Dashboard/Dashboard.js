@@ -36,12 +36,6 @@ class Dashboard extends Component {
     this.counter();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-  
-  }
-  
-
   async counter() {
     let token = Auth.getToken();
     

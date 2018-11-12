@@ -26,8 +26,10 @@ module.exports = (app) => {
     // All about user
     app.get('/api/user/profile', passportJWT, controllers.user.profile);
     app.get('/api/user/delete', passportJWT, controllers.user.deleteProfile);
-    app.get('/api/user/change/key', passportJWT, controllers.user.keyChecker);
+    app.get('/api/user/secret/key', passportJWT, controllers.user.getKey);
     app.post('/api/user/changePass', passportJWT, controllers.user.changePass);
+    app.post('/api/user/forgotPass', controllers.user.forgotPassword);
+    app.post('/api/user/change/username', passportJWT, controllers.user.changeUsername);
 
     // All about Events
     app.post('/api/event/create', passportJWT, controllers.event.create);

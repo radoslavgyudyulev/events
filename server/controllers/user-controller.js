@@ -32,8 +32,12 @@ module.exports = {
         }
     },
     changePass: async (req, res) => {
-        let currentUserId = req.user.id;
+        let currentUserId = req.user.id || req.body.id;
         let { key, newPassword, confirmedNewPassword } = req.body;
+
+        if (!key || !newPassword || !confirmedNewPassword) {
+            return res.status(200).json({ errorMessage: 'Please send valid data!' });
+        }
 
         try {
             let archive = await Archive.findOne({ id: currentUserId });
@@ -70,7 +74,31 @@ module.exports = {
             res.status(404).json({ error: error });
         }
     },
-    keyChecker: async (req, res) => {
+    changeUsername: async (req, res) => {
+        let currentUserId = req.user.id;
+        let { newUsername } = req.body;
+
+        if (!newUsername) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
+
+        try {
+            let currentUser = User.findById(currentUserId);
+
+            if (currentUser.method !== 'local') {
+                return res.status(200).json({ errorMessage: 'You can not change you username because your login method is by Facebook of Google!' });
+            }
+
+            currentUser.local.username = newUsername;
+
+            await currentUser.save();
+
+            res.status(200).json({ successMessage: 'Username changed successfully!' });
+        } catch (error) {
+            res.status(404).json({ error: error });
+        }
+    },
+    getKey: async (req, res) => {
         let currentUserId = req.user.id;
         let key = Math.round(Math.random() * 1000000);
 
@@ -118,6 +146,53 @@ module.exports = {
 
         } catch (error) {
             res.status(200).json({ error: error });
+        }
+    },
+    forgotPassword: async (req, res) => {
+        let { email } = req.body;
+        let key = Math.round(Math.random() * 1000000);
+
+        if (!email) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
+
+        try {
+            let user = await User.findOne({ 'local.email': email });
+
+            if (!user) {
+                return res.status(200).json({ errorMessage: 'No user with this email!' });
+            }
+
+            let oldArchive = await Archive.findOne({ id: user.id });
+
+            if (oldArchive) {
+                await Archive.findOneAndDelete({ id: user.id });
+            }
+
+            let salt = encryption.generateSalt();
+            let hashedKey = encryption.generateHashedPassword(salt, key.toString());
+
+            let newArchive = new Archive({
+                id: user.id,
+                key: hashedKey,
+                salt: salt
+            });
+            
+            await newArchive.save();
+
+            let timer = setTimeout(async () => {
+                try {
+                    await Archive.findOneAndDelete({ id: user.id });
+                    return clearTimeout(timer);
+                } catch (error) {
+                    throw new Error(error);
+                }
+            }, 900000);
+
+            sendMail(email, 'Secret Key', `WeedohEvents secret key: ${key.toString()}, valid for 15 min!`, res);
+
+        } catch (error) {
+            res.status(404).json({ error: error });
         }
     }
 };

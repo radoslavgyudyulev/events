@@ -20,7 +20,6 @@ class FindFriends extends Component {
       friendReq: [],
       limit : 10,
       skip : 0,
-      allFriends: [],
       loading : false
     };
 
@@ -33,6 +32,26 @@ class FindFriends extends Component {
 
   componentDidMount() {
     this.handleFriends();
+  }
+
+  async componentWillReceiveProps(nextProps) {
+    if (this.state.friendList !== nextProps.allFriends && nextProps.allFriends !== undefined) {
+      await this.setState({ friendList: nextProps.allFriends });
+    }
+  }
+
+  async getFriends() {
+    let { skip, limit } = this.state;
+    let token = Auth.getToken();
+    const data = await this.props.findFriends(token, limit, skip);
+
+
+    if (this.state.friendReq !== data.payload.yourSendedReq) {
+      this.setState({friendList : data.payload.users, 
+        friendReq : data.payload.yourSendedReq, 
+        loading : false
+      });
+    }
   }
   
 
@@ -52,8 +71,7 @@ class FindFriends extends Component {
     
     this.setState({friendList : data.payload.users, 
       friendReq : data.payload.yourSendedReq, 
-      loading : false,
-      allFriends: data.payload.allFriends,
+      loading : false
     });
     
   }
@@ -63,29 +81,21 @@ class FindFriends extends Component {
     e.target.innerHTML = 'Request sended!';
     e.target.classList.add("badge-success");
     let token = Auth.getToken();
-    let { skip, limit } = this.state;
-
 
     let data = await this.props.inviteFriend(token, id);
 
     if (data) {
-      await this.props.findFriends(token, limit, skip);
-
-      this.setState({friendList : data.payload.users, 
-        friendReq : data.payload.yourSendedReq, 
-        loading : false,
-        allFriends: data.payload.allFriends,
-      });
+      this.getFriends();
     }
     
   }
 
-  showMoreFriends() {
+  async showMoreFriends(e) {
+    e.preventDefault();
+    
     let { limit } = this.state;
-
-    this.setState({limit : limit + 10, skip : limit, loading : true});
-
-    this.handleFriends();
+    await this.setState({limit : limit + 10, skip : limit, loading : true});
+    await this.handleFriends();
 
   }
 
@@ -109,7 +119,7 @@ class FindFriends extends Component {
 
    
   render() {
-    const { friendList, friendReq, inputValue , allFriends, loading} = this.state;
+    const { friendList, friendReq, inputValue , loading} = this.state;
     return (
       <div className="container mt-3">
         <div className="input-group mb-3">
@@ -145,7 +155,8 @@ class FindFriends extends Component {
 
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.errorMessage
+    errorMessage: state.auth.errorMessage,
+    allFriends: state.friends.allFriends
   };
 }
 

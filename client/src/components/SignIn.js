@@ -184,11 +184,10 @@ class SignIn extends Component {
      
           <div className="modal-body mx-4">
 
-            <form onSubmit={ handleSubmit(this.onSubmit) } autoComplete="off">
+            <form onSubmit={ handleSubmit(this.onSubmit) }>
               <div className="md-form mb-5">
                 <fieldset>
                   <Field 
-                    autoComplete="off"
                     name="email"
                     type="text"
                     id="email"
@@ -202,7 +201,6 @@ class SignIn extends Component {
               <div className="md-form pb-3">
                 <fieldset>
                   <Field 
-                    autoComplete="off"
                     name="password"
                     type="password"
                     id="password"

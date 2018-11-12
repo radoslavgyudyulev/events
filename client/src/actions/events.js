@@ -15,7 +15,7 @@ import {
 export const createdEvent = (token, data) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/event/create', {
+      await axios('http://localhost:5000/api/event/create', {
         method: 'POST',
         headers: {
           'authorization': token
@@ -31,9 +31,15 @@ export const createdEvent = (token, data) => {
         }
       });
 
-
+      const response = await axios('http://localhost:5000/api/event/allEvents', {
+        method : 'GET',
+        headers: {
+          'authorization': token
+        },
+      });
+      
       return dispatch({
-        type : CREATE_EVENT,
+        type : GET_YOUR_EVENTS,
         payload : response.data
       });
     } catch (error) {
@@ -63,7 +69,7 @@ export const getEvents = (skip, limit) => {
   };
 };
 
-export const getAllUserEvents = token => {
+ export const getAllUserEvents = token => {
   return async dispatch => {
     try {
       const response = await axios('http://localhost:5000/api/event/allEvents', {

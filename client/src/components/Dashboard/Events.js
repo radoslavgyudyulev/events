@@ -28,7 +28,11 @@ class Events extends Component {
     this.getAllUserEvents();
   }
   
-  
+  componentWillReceiveProps(nextProps) {
+    if (this.state.allCreatedEvents !== nextProps.allCreatedEvents) {
+      this.setState({ allCreatedEvents: nextProps.allCreatedEvents });
+    }
+  }
 
   dateSplitter(date) {
     date = date.slice(0, 10);
@@ -151,7 +155,8 @@ class Events extends Component {
 
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.errorMessage
+    errorMessage: state.auth.errorMessage,
+    allCreatedEvents: state.events.allCreatedEvents
   };
 }
 

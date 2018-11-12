@@ -22,10 +22,11 @@ ReactDOM.render(
       isAuthenticated : Auth.isUserAuthenticated()
     },
     friends : {
-      friends : ''
+      friends : '',
+      allFriends: []
     },
     events: {
-      activeTab: 'yourEvents'
+      allCreatedEvents: ''
     }
   }, applyMiddleware(reduxThunk))}>
     <BrowserRouter>

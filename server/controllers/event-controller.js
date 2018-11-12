@@ -80,6 +80,10 @@ module.exports = {
         let data = req.body;
         let eventId = '';
 
+        if (!data.isPrivate || !data.title || !data.date) {
+            return res.status(200).json({ errorMessage: 'Title, date and isPrivate are required!Please send a valid data!' });
+        }
+
         try {
             if (data.numberOfParticipants < data.participants.length) {
                 return res.status(200).json({ message: 'Participants are more then a number you choose!' });
@@ -130,6 +134,10 @@ module.exports = {
         let getAllEvents = [];
         let { skip, limit } = req.body;
 
+        if (!skip || !limit) {
+            return res.status(200).json({ errorMessage: 'Invalid data!' });
+        }
+
         try {
             let events = await CalendarEvent
                 .find()
@@ -139,8 +147,10 @@ module.exports = {
                 .limit(limit)
                 .sort({ dateCreate: -1 });
 
-            if (events.length === 0) {
-                return res.status(200).json({ message: 'No events found!'});
+            let warningMessage = '';
+
+            if (events.length <= 10) {
+                warningMessage = 'There is 10 or less events be alert!';
             }
 
             for (let event of events) {
@@ -167,7 +177,7 @@ module.exports = {
 
                 getAllEvents.push(eventList);
             }
-            res.status(200).json({ getAllEvents });
+            res.status(200).json({ getAllEvents, warningMessage });
         } catch (error) {
             res.status(403).json({ error: error });
         }
@@ -175,15 +185,12 @@ module.exports = {
     },
     allEvents: async (req, res) => {
         let currentUserId = req.user.id;
-        let { skip, limit } = req.body;
         let allCreatedEvents = [];
 
         try {
             let currentUser = await User
                 .findById(currentUserId)
-                .populate('createdEvents')
-                .skip(skip)
-                .limit(limit);
+                .populate('createdEvents');
 
             for (let event of currentUser.createdEvents) {
                 let participants = [];
@@ -251,6 +258,10 @@ module.exports = {
         let currentUserId = req.user.id;
         let { eventId, answer } = req.body;
 
+        if (!eventId || !answer) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
+
         try {
             if (answer) {
                 let currentUser = await User
@@ -286,6 +297,10 @@ module.exports = {
     joinEvent: async (req, res) => {
         let currentUserId = req.user.id;
         let eventId = req.body.id;
+
+        if (!eventId)  {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
  
         try {
             let event = await CalendarEvent
@@ -314,6 +329,15 @@ module.exports = {
                     return res.status(200).json({ errorMessage: "The Event is Private!You can't join it!" });
                 } 
             }
+
+            let currentUser = await User.findById(currentUserId);
+
+            if (currentUser.invitedEvents.toString().includes(eventId)) {
+                let index = currentUser.invitedEvents.toString().indexOf(eventId);
+                currentUser.invitedEvents.splice(index, 1);
+            }
+
+            await currentUser.save();
  
             await event.save();
  
@@ -325,6 +349,10 @@ module.exports = {
     leaveEvent: async (req, res) => {
         let currentUserId = req.user.id;
         let eventId = req.body.id;
+
+        if (!eventId) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
  
         try {
             let event = await CalendarEvent
@@ -347,6 +375,10 @@ module.exports = {
     },
     delete: async (req, res) => {
         let eventId = req.body.id;
+
+        if (!eventId) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
 
         try {
             let event = await CalendarEvent.findById(eventId).populate('participants');
@@ -385,7 +417,7 @@ module.exports = {
                     usersEmails.push(options);
 
                 }
-                sendMail(usersEmails, `${event.title}`, `The ${event.title} event witch you have been part of was deleted by ${creatorName}!`);
+                sendMail(usersEmails, `${event.title}`, `The ${event.title} event on ${event.date} witch you have been part of was now deleted by the creator: ${creatorName}!`);
             }
  
             await CalendarEvent.findByIdAndDelete(eventId);

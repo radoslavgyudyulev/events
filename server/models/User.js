@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         type: String, enum: ['local', 'google', 'facebook'], required: true 
     },
     local: { 
-        email: { type: String, lowercase: true, index: true, unique: true, sparse: true },
+        email: { type: String, lowercase: true, unique: true},
         username: { type: String },
         password: { type: String },
         salt: { type: String }

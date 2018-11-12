@@ -12,7 +12,8 @@ class Requests extends Component {
     super(props); 
 
     this.state = {
-      invites: []
+      invites: [],
+      friends: []
     };
 
     this.friendsRequests = this.friendsRequests.bind(this);
@@ -39,7 +40,11 @@ class Requests extends Component {
     let element = e.target.parentNode;
     element.parentNode.removeChild(element);
 
-    await this.props.friendReqAnswer(token, id, answer);   
+    let data = await this.props.friendReqAnswer(token, id, answer);   
+
+    if (data) {
+      this.setState({ friends: data.payload.friends });
+    }
   }
 
   render() {
@@ -71,8 +76,7 @@ class Requests extends Component {
 
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.errorMessage,
-  
+    errorMessage: state.auth.errorMessage
   };
 }
 

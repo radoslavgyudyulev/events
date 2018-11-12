@@ -9,7 +9,8 @@ import { CREATE_EVENT,
   EDIT_EVENT } from '../actions/types';
 
 const DEFAULT_STATE = {
-  invitesLength : []
+  invitesLength : [],
+  allCreatedEvents: []
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -19,7 +20,7 @@ export default (state = DEFAULT_STATE, action) => {
   case GET_ALL_EVENTS: 
     return { ...state };
   case GET_YOUR_EVENTS: 
-    return { ...state };
+    return { ...state,  allCreatedEvents: action.payload.allCreatedEvents };
   case GET_YOUR_INVITES: 
     return { ...state, invitesLength: action.payload };
   case INVITES_ANSWER: 

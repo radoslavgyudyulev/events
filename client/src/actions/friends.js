@@ -7,7 +7,8 @@ import {
   DELETE_ACCOUNT,
   GET_PASSWORD_KEY,
   CHANGE_PASSWORD,
-  SERVER_SEARCH
+  SERVER_SEARCH,
+  YOUR_FRIENDS
 } from './types';
 
 
@@ -107,7 +108,7 @@ export const getRequest = token => {
 export const friendReqAnswer = (token, id, answer) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/user/request/answer', {
+      await axios('http://localhost:5000/api/user/request/answer', {
         method: 'POST',
         headers: {
           'authorization': token
@@ -118,10 +119,16 @@ export const friendReqAnswer = (token, id, answer) => {
         }
       });
 
+      const response = await axios('http://localhost:5000/api/user/friends/yourFriends', {
+        method: 'GET',
+        headers: {
+          'authorization': token
+        }
+      });
 
       return dispatch({
-        type : SEND_ANSWER,
-        payload : response.payload
+        type : YOUR_FRIENDS,
+        payload : response.data
       });
     } catch (error) {
       console.log(error);
@@ -140,7 +147,7 @@ export const yourFriends = token => {
       });
 
       return dispatch({
-        type : SEND_ANSWER,
+        type : YOUR_FRIENDS,
         payload : response.data
       });
     } catch (error) {
@@ -152,7 +159,7 @@ export const yourFriends = token => {
 export const removeFriend = (token, id) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/user/friends/remove', {
+      await axios('http://localhost:5000/api/user/friends/remove', {
         method: 'POST',
         headers: {
           'authorization': token
@@ -162,9 +169,19 @@ export const removeFriend = (token, id) => {
         }
       });
 
+      const response = await axios('http://localhost:5000/api/user/friends/find', {
+        method : 'POST',
+        headers : {
+          "authorization": token
+        },
+        data : {
+          limit : 10,
+          skip : 0
+        }
+      });
 
       return dispatch({
-        type : REMOVE_FRIEND,
+        type : FIND_FRIENDS,
         payload : response.data
       });
     } catch (error) {
@@ -177,7 +194,7 @@ export const removeFriend = (token, id) => {
 export const getPasswordKey = token => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/user/change/key', {
+      const response = await axios('http://localhost:5000/api/user/secret/key', {
         method : 'GET',
         headers: {
           'authorization': token

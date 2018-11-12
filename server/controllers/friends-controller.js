@@ -6,6 +6,10 @@ module.exports = {
     findFriends: async (req, res) => {
         const currentUserId = req.user.id;
         const { limit, skip } = req.body;
+
+        if (skip < 0 || !limit) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
  
         try {
             let currentUser = await User
@@ -13,9 +17,6 @@ module.exports = {
                 .populate('requestSend')
                 .populate('friends')
                 .populate('requestGet');
-
-            let all = await User.find();
-            let allFriends = all.length;
 
             let usersData = await User.find().skip(skip).limit(limit);
             usersData = usersData.filter(u => u.id !== currentUserId);
@@ -31,6 +32,12 @@ module.exports = {
             for (let i = 0; i < currentUser.requestGet.length; i++) {
                 usersData = usersData.filter(u => u.id !== currentUser.requestGet[i].id);
             }
+
+            let warningMessage = '';
+
+            if (usersData.length <= 10) {
+                warningMessage = 'There is 10 or less friends be alert!';
+            }
  
             let users = [];
             for (let user of usersData) {
@@ -43,7 +50,7 @@ module.exports = {
                 yourSendedReq.push(checkMethod(user, UserData));
             }
  
-            res.status(200).json({ users, yourSendedReq, allFriends});
+            res.status(200).json({ users, yourSendedReq, warningMessage });
         } catch (error) {
             res.status(403).json({ error: error });
         }
@@ -52,9 +59,14 @@ module.exports = {
         let otherUsers = req.body.id;
         let currentUserId = req.user.id;
 
+        if (!otherUsers) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
+
         try {
             let user = await User.findById(otherUsers);
             let currentUser = await User.findById(currentUserId);
+
             if (user.requestGet.toString().indexOf(currentUserId) === -1) {
                 user.requestGet.push(currentUserId);
                 await user.save();
@@ -90,54 +102,54 @@ module.exports = {
         let currentUserId = req.user.id;
         let { otherUserId, answer } = req.body;
 
-        if (otherUserId) {
-            if (answer === 'yes') {
-                try {
-                    let currentUser = await User.findById(currentUserId);
-                    currentUser.friends.push(otherUserId);
-                    let currentUserIndex = currentUser.requestGet.toString().indexOf(otherUserId);
-                    currentUser.requestGet.splice(currentUserIndex, 1);
-                    let currentUserIndex2 = currentUser.requestSend.toString().indexOf(otherUserId);
-                    currentUser.requestSend.splice(currentUserIndex2, 1);
-                    await currentUser.save();
-    
-                    let otherUser = await User.findById(otherUserId);
-                    otherUser.friends.push(currentUserId);
-                    let otherUserIndex = currentUser.requestSend.toString().indexOf(currentUserId);
-                    otherUser.requestSend.splice(otherUserIndex, 1);
-                    let otherUserIndex2 = currentUser.requestGet.toString().indexOf(currentUserId);
-                    otherUser.requestGet.splice(otherUserIndex2, 1);
-                    await otherUser.save();
-    
-                    res.status(200).json({ message: 'Request successfully accept!' });
-                } catch (error) {
-                    res.status(403).json({ error: error });
-                }
-            } else if (answer === 'no') {
-                try {
-                    let currentUser = await User.findById(currentUserId);
-                    let index = currentUser.requestGet.toString().indexOf(otherUserId);
-                    currentUser.requestGet.splice(index, 1);
-                    let index2 = currentUser.requestSend.toString().indexOf(otherUserId);
-                    currentUser.requestSend.splice(index2, 1);
-    
-                    await currentUser.save();
+        if (!otherUserId || !answer) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
 
-                    let otherUser = await User.findById(otherUserId);
-                    let index3 = otherUser.requestGet.toString().indexOf(currentUserId);
-                    otherUser.requestGet.splice(index3, 1);
-                    let index4 = otherUser.requestSend.toString().indexOf(currentUserId);
-                    otherUser.requestSend.splice(index4, 1);
-    
-                    await otherUser.save();
-                    
-                    res.status(200).json({ message: 'Request successfully refused' });
-                } catch (error) {
-                    res.status(403).json({ error: error });
-                }
+        if (answer === 'yes') {
+            try {
+                let currentUser = await User.findById(currentUserId);
+                currentUser.friends.push(otherUserId);
+                let currentUserIndex = currentUser.requestGet.indexOf(otherUserId);
+                currentUser.requestGet.splice(currentUserIndex, 1);
+                let currentUserIndex2 = currentUser.requestSend.indexOf(otherUserId);
+                currentUser.requestSend.splice(currentUserIndex2, 1);
+                await currentUser.save();
+
+                let otherUser = await User.findById(otherUserId);
+                otherUser.friends.push(currentUserId);
+                let otherUserIndex = currentUser.requestSend.indexOf(currentUserId);
+                otherUser.requestSend.splice(otherUserIndex, 1);
+                let otherUserIndex2 = currentUser.requestGet.indexOf(currentUserId);
+                otherUser.requestGet.splice(otherUserIndex2, 1);
+                await otherUser.save();
+
+                res.status(200).json({ message: 'Request successfully accept!' });
+            } catch (error) {
+                res.status(403).json({ error: error });
             }
-        } else {
-            res.status(403).json({ error: 'Please send a valid data!' });
+        } else if (answer === 'no') {
+            try {
+                let currentUser = await User.findById(currentUserId);
+                let index = currentUser.requestGet.indexOf(otherUserId);
+                currentUser.requestGet.splice(index, 1);
+                let index2 = currentUser.requestSend.indexOf(otherUserId);
+                currentUser.requestSend.splice(index2, 1);
+
+                await currentUser.save();
+
+                let otherUser = await User.findById(otherUserId);
+                let index3 = otherUser.requestGet.indexOf(currentUserId);
+                otherUser.requestGet.splice(index3, 1);
+                let index4 = otherUser.requestSend.indexOf(currentUserId);
+                otherUser.requestSend.splice(index4, 1);
+
+                await otherUser.save();
+                
+                res.status(200).json({ message: 'Request successfully refused' });
+            } catch (error) {
+                res.status(403).json({ error: error });
+            }
         }
     },
     yourFriends: async (req, res) => {
@@ -161,16 +173,20 @@ module.exports = {
     remove: async (req, res) => {
         let currentUserId = req.user.id;
         let otherUserId = req.body.id;
+
+        if (!otherUserId) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        } 
  
         try {
             let currentUser = await User.findById(currentUserId);
             let otherUser = await User.findById(otherUserId);
  
-            let currentUserIndex = currentUser.friends.toString().indexOf(otherUserId);
+            let currentUserIndex = currentUser.friends.indexOf(otherUserId);
             currentUser.friends.splice(currentUserIndex, 1);
             await currentUser.save();
  
-            let otherUserIndex = otherUser.friends.toString().indexOf(currentUserId);
+            let otherUserIndex = otherUser.friends.indexOf(currentUserId);
             otherUser.friends.splice(otherUserIndex, 1);
             await otherUser.save();
  
@@ -182,6 +198,10 @@ module.exports = {
     search: async (req, res) => {
         let name = req.query.text;
         let users = [];
+
+        if (!name) {
+            return res.status(200).json({ errorMessage: 'Please send a valid data!' });
+        }
 
         try {
             let userData = await User.find();
