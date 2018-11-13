@@ -5,7 +5,7 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 
 
 export const FIND_FRIENDS = 'FIND_FRIENDS';
-export const INVITE_FRIEND = 'FIND_FRIENDS';
+export const INVITE_FRIEND = 'INVITE_FRIEND';
 export const GET_PROFILE = 'GET_PROFILE';
 export const GET_REQUEST = 'GET_REQUEST';
 export const SEND_ANSWER = 'SEND_ANSWER';

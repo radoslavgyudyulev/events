@@ -22,11 +22,13 @@ ReactDOM.render(
       isAuthenticated : Auth.isUserAuthenticated()
     },
     friends : {
-      friends : '',
-      allFriends: []
+      invitedFriends: [],
+      yourFriendsList: [],
+      allUsersList: []
     },
     events: {
-      allCreatedEvents: ''
+      allCreatedEvents: [],
+      invitesLength: []
     }
   }, applyMiddleware(reduxThunk))}>
     <BrowserRouter>

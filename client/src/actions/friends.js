@@ -44,7 +44,7 @@ export const findFriends = (token, limit, skip) => {
 export const inviteFriend = (token, id) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/user/request/send', {
+      await axios('http://localhost:5000/api/user/request/send', {
         method : 'POST',
         headers : {
           "authorization": token
@@ -52,14 +52,19 @@ export const inviteFriend = (token, id) => {
         data : {
           id : id
         }
-      });
-         
-         
-      return dispatch({
-        type : FIND_FRIENDS,
-        payload : response
+      });   
+
+      const response = await axios('http://localhost:5000/api/user/request/get', {
+        method: 'GET',
+        headers: {
+          'authorization': token
+        }
       });
 
+      return dispatch({
+        type : INVITE_FRIEND,
+        payload : response.data
+      });
      
     } catch(err) {
       //  dispatch({
@@ -180,9 +185,10 @@ export const removeFriend = (token, id) => {
         }
       });
 
+      
       return dispatch({
         type : FIND_FRIENDS,
-        payload : response.data
+        payload : response.data,
       });
     } catch (error) {
       console.log(error);

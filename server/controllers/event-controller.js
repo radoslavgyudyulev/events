@@ -134,7 +134,7 @@ module.exports = {
         let getAllEvents = [];
         let { skip, limit } = req.body;
 
-        if (!skip || !limit) {
+        if (skip < 0 || !limit) {
             return res.status(200).json({ errorMessage: 'Invalid data!' });
         }
 
@@ -400,7 +400,7 @@ module.exports = {
 
             let allUsers = await User.find().where('invitedEvents').equals(eventId);
 
-            if (allUsers) {
+            if (allUsers.length > 0) {
                 for (let user of allUsers) {
                     let index = user.invitedEvents.toString().indexOf(eventId);
                     user.invitedEvents.splice(index, 1);
@@ -409,7 +409,7 @@ module.exports = {
                 }
             }
 
-            if (event.participants) {
+            if (event.participants.length > 0) {
                 let usersEmails = [];
                 
                 for (let participant of event.participants) {

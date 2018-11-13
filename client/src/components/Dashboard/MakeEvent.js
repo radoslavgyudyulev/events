@@ -28,7 +28,8 @@ class MakeEvent extends Component {
          time : '',
          clock : '',
          eventCondition : 'Public',
-         loading : false
+         loading : false,
+         allUsersList: []
       };
 
       this.getPickerValue = this.getPickerValue.bind(this);
@@ -43,6 +44,14 @@ class MakeEvent extends Component {
 
    componentDidMount() {
        this.yourProfile();
+       this.setState({ allUsersList: this.props.allUsersList })
+   }
+
+   componentWillReceiveProps(nextProps) {
+       if (this.state.yourFriends !== nextProps.yourFriendsList) {
+           this.setState({ yourFriends: nextProps.yourFriendsList });
+       }
+
    }
    
 
@@ -78,6 +87,7 @@ class MakeEvent extends Component {
 
     handleInputs(e) {
         this.setState({[e.target.name] : e.target.value})
+        this.checkData()
     }
     
     getFriendId(e) {
@@ -114,13 +124,17 @@ class MakeEvent extends Component {
 
     async yourProfile() {
         let token = Auth.getToken();
-        let { skipFriendsData, limitFriendsData } = this.state;
     
-        let data = await this.props.yourFriends(token, skipFriendsData, limitFriendsData);
+        let data = await this.props.yourFriends(token);
           
         this.setState({ yourFriends : data.payload.friends }); 
-      }
+    }
 
+    checkData() {
+        if (this.state.allUsersList !== this.props.allUsersList) {
+            this.yourProfile();
+        }
+    };
 
 
    render() {
@@ -219,6 +233,8 @@ class MakeEvent extends Component {
 function mapStateToProps(state) {
     return {
         errorMessage: state.auth.errorMessage,
+        yourFriendsList: state.friends.yourFriendsList,
+        allUsersList: state.friends.allUsersList
     };
   }
   

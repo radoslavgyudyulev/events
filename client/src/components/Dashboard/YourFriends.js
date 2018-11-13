@@ -13,7 +13,7 @@ class YourFriends extends Component {
     super(props); 
 
     this.state = {
-      yourFriends : this.props.friends || []
+      yourFriends : this.props.yourFriendsList || []
     };
 
     this.yourProfile = this.yourProfile.bind(this);
@@ -25,8 +25,8 @@ class YourFriends extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.friends !== nextProps.friends) {
-      this.setState({ yourFriends : nextProps.friends });
+    if (this.state.friends !== nextProps.yourFriendsList) {
+      this.setState({ yourFriends : nextProps.yourFriendsList });
     }
   }
   
@@ -38,8 +38,7 @@ class YourFriends extends Component {
     let element = e.target.parentNode;
     element.parentNode.removeChild(element);
 
-    let data = await this.props.removeFriend(token, id);  
-    console.log(data);
+    await this.props.removeFriend(token, id);  
   }
 
 
@@ -81,8 +80,8 @@ class YourFriends extends Component {
 
 function mapStateToProps(state) {
   return {
-    friends: state.friends.friends.friends,
-    errorMessage: state.auth.errorMessage
+    errorMessage: state.auth.errorMessage,
+    yourFriendsList: state.friends.yourFriendsList
   };
 }
 

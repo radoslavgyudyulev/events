@@ -29,7 +29,6 @@ class LandingPage extends Component {
 
   componentDidMount() {
     this.getEvents();
-      
   }
    
 
@@ -52,12 +51,18 @@ class LandingPage extends Component {
     if (data.payload.errorMessage) {
       let errMsgs = this.state.errorMsg;
       errMsgs[eventId] = data.payload.errorMessage;
-      this.setState({ errorMsg: errMsgs });
+      this.setState({ errorMsg: errMsgs, successMsg: [] });
     } else if (data.payload.successMessage) {
       let successMsgs = this.state.successMsg;
       successMsgs[eventId] = data.payload.successMessage;
-      this.setState({ successMsg: successMsgs });
+      this.setState({ successMsg: successMsgs, errorMsg: [] });
     }
+
+    let timer = setTimeout(() => {
+      this.setState({ successMsg: [], errorMsg: [] });
+      return clearTimeout(timer);
+    }, 3000);
+
     this.getEvents();
   }
 
@@ -69,12 +74,17 @@ class LandingPage extends Component {
     if (data.payload.errorMessage) {
       let errMsgs = this.state.errorMsg;
       errMsgs[eventId] = data.payload.errorMessage;
-      this.setState({ errorMsg: errMsgs });
+      this.setState({ errorMsg: errMsgs, successMsg: [] });
     } else if (data.payload.successMessage) {
       let successMsgs = this.state.successMsg;
       successMsgs[eventId] = data.payload.successMessage;
-      this.setState({ successMsg: successMsgs });
+      this.setState({ successMsg: successMsgs, errorMsg: [] });
     }
+
+    let timer = setTimeout(() => {
+      this.setState({ successMsg: [], errorMsg: [] });
+      return clearTimeout(timer);
+    }, 3000);
     this.getEvents();
   }
    

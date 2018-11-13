@@ -25,7 +25,7 @@ export default class Event extends Component {
 
   render() {
     let { events, joinEvent, leaveEvent, errorMsg, successMsg } = this.props;
-    
+    console.log(events)
     return (
       <div className="container">
         {events
@@ -81,7 +81,7 @@ export default class Event extends Component {
                             { errorMsg 
                               ?
                               <div className="alert-danger">{ errorMsg[event.eventId] }</div>
-                              : '' }
+                              : null }
 
                             { successMsg
                               ?

@@ -20,9 +20,9 @@ export default (state = DEFAULT_STATE, action) => {
   case GET_ALL_EVENTS: 
     return { ...state };
   case GET_YOUR_EVENTS: 
-    return { ...state,  allCreatedEvents: action.payload.allCreatedEvents };
+    return { ...state, allCreatedEvents: action.payload.allCreatedEvents  };
   case GET_YOUR_INVITES: 
-    return { ...state, invitesLength: action.payload };
+    return { ...state, invitesLength: action.payload.allInvitedEvents };
   case INVITES_ANSWER: 
     return { ...state };
   case JOIN_EVENT: 

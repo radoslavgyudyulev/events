@@ -27,7 +27,8 @@ class Dashboard extends Component {
       loading : false,
       eventsRequestsLength : '',
       userRequestsLength : '',
-      activeTab : 'yourFriends'
+      activeTab : 'yourFriends',
+      yourFriendsList: this.props.yourFriendsList || []
     };
     this.counter = this.counter.bind(this);
   }
@@ -35,6 +36,20 @@ class Dashboard extends Component {
   componentDidMount() {
     this.counter();
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.yourFriendsList !== nextProps.yourFriendsList) {
+      this.setState({ userRequestsLength: this.state.userRequestsLength - 1 });
+      if (this.state.userRequestsLength <= 0) {
+        this.setState({ userRequestsLength: 0 });
+      }
+    }
+
+    if (this.state.eventsRequestsLength !== nextProps.invitesLength.length) {
+      this.setState({ eventsRequestsLength: nextProps.invitesLength.length });
+    }
+  }
+
 
   async counter() {
     let token = Auth.getToken();
@@ -48,8 +63,9 @@ class Dashboard extends Component {
     let eventsRequestsLength = eventsRequests.payload.allInvitedEvents.length;
 
     this.setState({ userRequestsLength : userRequestsLength, eventsRequestsLength : eventsRequestsLength });
+
   }
-  
+
   render() {
     const { loading, eventsRequestsLength, userRequestsLength, activeTab } = this.state;
     return (
@@ -118,6 +134,9 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.errorMessage,
+    invitedFriends: state.friends.invitedFriends,
+    yourFriendsList: state.friends.yourFriendsList,
+    invitesLength: state.events.invitesLength
   };
 }
 

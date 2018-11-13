@@ -35,8 +35,8 @@ class FindFriends extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (this.state.friendList !== nextProps.allFriends && nextProps.allFriends !== undefined) {
-      await this.setState({ friendList: nextProps.allFriends });
+    if (this.state.friendList !== nextProps.allUsersList && nextProps.allUsersList !== undefined) {
+      await this.setState({ friendList: nextProps.allUsersList });
     }
   }
 
@@ -156,7 +156,7 @@ class FindFriends extends Component {
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.errorMessage,
-    allFriends: state.friends.allFriends
+    allUsersList: state.friends.allUsersList
   };
 }
 

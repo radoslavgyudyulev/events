@@ -65,7 +65,7 @@ class Events extends Component {
     
     let data = await this.props.deleteEvent(token, eventId);
 
-    // console.log(data);
+    console.log(data);
   }
 
   render() {
@@ -77,7 +77,7 @@ class Events extends Component {
           ? 
           allCreatedEvents.map(event => {
             return (
-              <div key={ event.eventId } className="event-panel mb-5">
+              <div key={ event.eventId } id={ event.eventId } className="event-panel mb-5">
                 <DeleteEvent eventId={ event.eventId } deleteEvent={ this.deleteEvent } />
                 <ReactTooltip />
                 {event.isPrivate 

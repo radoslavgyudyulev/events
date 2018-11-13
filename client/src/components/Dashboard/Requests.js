@@ -12,7 +12,7 @@ class Requests extends Component {
     super(props); 
 
     this.state = {
-      invites: [],
+      invitedFriends: [],
       friends: []
     };
 
@@ -25,11 +25,16 @@ class Requests extends Component {
     this.friendsRequests();
   }
   
+  componentWillReceiveProps(nextProps) {
+    if (this.state.invitedFriends !== nextProps.invitedFriends) {
+      this.setState({ invitedFriends: nextProps.invitedFriends });
+    }
+  }
 
   async friendsRequests() {
     let token = Auth.getToken();
     let data = await this.props.getRequest(token);
-    this.setState({invites : data.payload.usersRequests});
+    this.setState({invitedFriends : data.payload.usersRequests});
   }
 
   async friendsReqAnswer(e) {
@@ -48,12 +53,12 @@ class Requests extends Component {
   }
 
   render() {
-    const { invites } = this.state;
+    const { invitedFriends } = this.state;
     return (
       <div className="mt-3">
-        {invites.length > 0 
+        {invitedFriends.length > 0 
           ?
-          invites.map(data => {
+          invitedFriends.map(data => {
             return (
               <div id={ data.id } key={ data.id } className="pt-1">
                 <ul className="list-group">
@@ -76,7 +81,8 @@ class Requests extends Component {
 
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.errorMessage
+    errorMessage: state.auth.errorMessage,
+    invitedFriends: state.friends.invitedFriends
   };
 }
 

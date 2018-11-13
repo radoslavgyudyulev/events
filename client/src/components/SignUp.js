@@ -50,81 +50,6 @@ class SignUp extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-    // <div className="sign-up-wrapper shadow-lg">
-    //   <div>
-    //     <form onSubmit={handleSubmit(this.onSubmit)}>
-    //       <fieldset>
-    //         <Field 
-    //           name="email"
-    //           type="text"
-    //           id="email"
-    //           label="Email"
-    //           placeholder="Enter your Email"
-    //           component={ CustomInput } />
-    //       </fieldset>
-
-    //       <fieldset>
-    //         <Field 
-    //           name="username"
-    //           type="text"
-    //           id="username"
-    //           label="Username"
-    //           placeholder="Enter your Username"
-    //           component={ CustomInput } />
-    //       </fieldset>
-
-    //       <fieldset>
-    //         <Field 
-    //           name="password"
-    //           type="password"
-    //           id="password"
-    //           label="Password"
-    //           placeholder="Enter your Password"
-    //           component={ CustomInput } />
-    //       </fieldset>
-
-    //       <fieldset>
-    //         <Field 
-    //           name="confirmedPassword"
-    //           type="password"
-    //           id="confirmedPassword"
-    //           label="Confirm Password"
-    //           placeholder="Confirm your password"
-    //           component={ CustomInput } />
-    //       </fieldset>
-
-    //       { this.props.errorMessage ? 
-    //         <div className="alert alert-danger">
-    //           { this.props.errorMessage }
-    //         </div>
-    //         : null }
-
-    //       <button className="btn btn-primary sign-up-btn" type="submit">Sign Up</button>
-    //     </form>
-    //   </div>
-
-    //   <div className="">
-    //     <div className="text-center">
-    //       <div className="alert alert-primary">
-    //               Or Sign up using third-party services
-    //       </div>
-    //       <FacebookLogin
-    //         appId="410704536128622"
-    //         autoLoad={false}
-    //         textButton="Facebook"
-    //         fields="name,email,picture"
-    //         cssClass="btn btn-outline-primary facebook-sign-up-btn"
-    //         callback={this.responseFacebook} />
-    //       <GoogleLogin
-    //         clientId="252779705704-v00p7c19m31gl5kb6ujjivrdm6g43j9q.apps.googleusercontent.com"
-    //         buttonText="Google"
-    //         className="btn btn-outline-danger google-sign-up-btn"
-    //         onSuccess={this.responseGoogle}
-    //         onFailure={this.responseGoogle} />
-    //     </div>
-    //   </div>
-    // </div>
-
       <div style={{width: '450px'}} className="modal-dialog" role="document">
     
         <div className="modal-content form-elegant">
@@ -143,7 +68,8 @@ class SignUp extends Component {
                     type="text"
                     id="email"
                     label="Email"
-                    component={ CustomInput } />
+                    component={ CustomInput }
+                  />
                 </fieldset>
               </div>
 
@@ -154,7 +80,8 @@ class SignUp extends Component {
                     type="text"
                     id="username"
                     label="Username"
-                    component={ CustomInput } />
+                    component={ CustomInput }
+                  />
                 </fieldset>
               </div>
            

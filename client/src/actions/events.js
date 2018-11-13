@@ -110,7 +110,7 @@ export const getYourInvites = token => {
 export const invitesAnswer = (token, eventId, answer) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/event/invites/answer', {
+      await axios('http://localhost:5000/api/event/invites/answer', {
         method : 'POST',
         headers: {
           'authorization': token
@@ -121,10 +121,17 @@ export const invitesAnswer = (token, eventId, answer) => {
         }
       });
 
+      const response = await axios('http://localhost:5000/api/event/invites', {
+        method : 'GET',
+        headers: {
+          'authorization': token
+        },
+      });
       return dispatch({
-        type : INVITES_ANSWER,
+        type : GET_YOUR_INVITES,
         payload : response.data
       });
+      
     } catch (error) {
       console.log(error);
     }
@@ -181,7 +188,7 @@ export const leaveEvent = (token, eventId) => {
 export const deleteEvent = (token, eventId) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/event/delete', {
+      await axios('http://localhost:5000/api/event/delete', {
         method : 'POST',
         headers: {
           'authorization': token
@@ -191,8 +198,15 @@ export const deleteEvent = (token, eventId) => {
         }
       });
 
+      const response = await axios('http://localhost:5000/api/event/allEvents', {
+        method : 'GET',
+        headers: {
+          'authorization': token
+        },
+      });
+      
       return dispatch({
-        type : DELETE_EVENT,
+        type : GET_YOUR_EVENTS,
         payload : response.data
       });
     } catch (error) {
@@ -205,7 +219,7 @@ export const deleteEvent = (token, eventId) => {
 export const editEvent = (token, data) => {
   return async dispatch => {
     try {
-      const response = await axios('http://localhost:5000/api/event/edit', {
+      await axios('http://localhost:5000/api/event/edit', {
         method : 'POST',
         headers: {
           'authorization': token
@@ -215,8 +229,15 @@ export const editEvent = (token, data) => {
         }
       });
 
+      const response = await axios('http://localhost:5000/api/event/allEvents', {
+        method : 'GET',
+        headers: {
+          'authorization': token
+        },
+      });
+      
       return dispatch({
-        type : EDIT_EVENT,
+        type : GET_YOUR_EVENTS,
         payload : response.data
       });
     } catch (error) {
