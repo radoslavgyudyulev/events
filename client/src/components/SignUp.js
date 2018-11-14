@@ -105,8 +105,6 @@ class SignUp extends Component {
                       component={ CustomInput } />
                   </fieldset>
                 </div>
-                <p className="font-small blue-text d-flex justify-content-end">Forgot <a href="#" className="blue-text ml-1">
-            Password?</a></p>
               </div>
 
               <div className="text-center mb-3">

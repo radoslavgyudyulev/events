@@ -4,12 +4,14 @@ import {
   SEND_ANSWER,
   YOUR_FRIENDS,
   REMOVE_FRIEND,
-  SERVER_SEARCH } from '../actions/types';
+  SERVER_SEARCH,
+  PROFILE_DATA } from '../actions/types';
 
 const DEFAULT_STATE = {
   invitedFriends: [],
   yourFriendsList: [],
-  allUsersList: []
+  allUsersList: [],
+  personalData: []
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -26,6 +28,8 @@ export default (state = DEFAULT_STATE, action) => {
     return { ...state}; 
   case SERVER_SEARCH:
     return { ...state };
+  case PROFILE_DATA:
+    return { ...state, personalData: action.payload.user };
   default: 
     return state;
   } 

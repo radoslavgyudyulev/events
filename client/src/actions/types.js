@@ -26,14 +26,7 @@ export const DELETE_EVENT = 'DELETE_EVENT';
 export const EDIT_EVENT = 'EDIT_EVENT';
 
 
-
+export const PROFILE_DATA = 'PROFILE_DATA';
 export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
 export const GET_PASSWORD_KEY = 'GET_PASSWORD_KEY';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
-
-
-
-
-
-
-

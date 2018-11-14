@@ -29,7 +29,7 @@ module.exports = (app) => {
     app.get('/api/user/secret/key', passportJWT, controllers.user.getKey);
     app.post('/api/user/changePass', passportJWT, controllers.user.changePass);
     app.post('/api/user/forgotPass', controllers.user.forgotPassword);
-    app.post('/api/user/change/username', passportJWT, controllers.user.changeUsername);
+    app.post('/api/user/change/data', passportJWT, controllers.user.changeData);
 
     // All about Events
     app.post('/api/event/create', passportJWT, controllers.event.create);

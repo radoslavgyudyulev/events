@@ -24,7 +24,8 @@ ReactDOM.render(
     friends : {
       invitedFriends: [],
       yourFriendsList: [],
-      allUsersList: []
+      allUsersList: [],
+      personalData: []
     },
     events: {
       allCreatedEvents: [],

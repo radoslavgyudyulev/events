@@ -277,6 +277,17 @@
     border-radius: 30px;
 }
 
+.change-data-btn {
+    display: block;
+    height: 2.2rem;
+    width: 12rem;
+    margin: 5px;
+}
 
-
-
+.forgot-password-btn {
+    background-color: white;
+    border: none;
+    float: right;
+    cursor: pointer;
+    color: rgb(105, 102, 116);
+}

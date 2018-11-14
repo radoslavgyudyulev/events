@@ -7,6 +7,8 @@ import LandingPage from '../LandingPage';
 import SignUp from '../SignUp';
 import SignIn from '../SignIn';
 import Dashboard from '../Dashboard/Dashboard';
+import Validate from '../Common/Validate';
+
 
 
 export default class Routes extends Component {
@@ -14,6 +16,7 @@ export default class Routes extends Component {
     return ( 
       <Switch>
         <Route exact path='/' component={LandingPage}/>
+        <Route exact path='/validate' component={Validate}/>
         {!Auth.isUserAuthenticated() ? <Route exact path='/signup' component={SignUp}/> : null}
         {!Auth.isUserAuthenticated() ? <Route exact path='/signin' component={SignIn}/> : null}
         {Auth.isUserAuthenticated() ? <Route exact path='/dashboard' component={Dashboard}/> : null}

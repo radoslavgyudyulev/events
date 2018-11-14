@@ -8,7 +8,8 @@ import {
   GET_PASSWORD_KEY,
   CHANGE_PASSWORD,
   SERVER_SEARCH,
-  YOUR_FRIENDS
+  YOUR_FRIENDS,
+  PROFILE_DATA
 } from './types';
 
 
@@ -85,7 +86,10 @@ export const getProfile = token => {
       }
     });
 
-    return response;
+    return dispatch({
+      type : PROFILE_DATA,
+      payload : response.data
+    });
   };
   
 };
@@ -285,3 +289,58 @@ export const serverSearch = (token, text) => {
   };
 };
 
+
+export const changeData = (token, username, email) => {
+  return async dispatch => {
+    try {
+      const data = await axios('http://localhost:5000/api/user/change/data', {
+        method : 'POST',
+        headers: {
+          'authorization': token
+        },
+        data: {
+          newUsername: username,
+          newEmail: email
+        }
+      });
+
+      if (data.payload.successMessage) {
+        const response = await axios('http://localhost:5000/api/user/profile', {
+          method : 'GET',
+          headers : {
+            "authorization": token
+          }
+        });
+    
+        return dispatch({
+          type : PROFILE_DATA,
+          payload : response.data
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+
+export const forgotPassword = (email) => {
+  return async dispatch => {
+    try {
+      const response = await axios('http://localhost:5000/api/user/forgotPass', {
+          method: 'POST',
+          data: {
+            email: email
+          }
+      });
+       
+      return dispatch({
+        type: 'DEFAULT',
+        payload : response.data
+      });
+
+    } catch(err) {
+      console.error('err', err);
+    }
+  };
+};

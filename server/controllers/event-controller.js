@@ -80,7 +80,7 @@ module.exports = {
         let data = req.body;
         let eventId = '';
 
-        if (!data.isPrivate || !data.title || !data.date) {
+        if (!data.title || !data.date) {
             return res.status(200).json({ errorMessage: 'Title, date and isPrivate are required!Please send a valid data!' });
         }
 
@@ -147,10 +147,8 @@ module.exports = {
                 .limit(limit)
                 .sort({ dateCreate: -1 });
 
-            let warningMessage = '';
-
-            if (events.length <= 10) {
-                warningMessage = 'There is 10 or less events be alert!';
+            if (events.length < 10) {
+                return res.status(200).json({ errorMessage: 'No more data' });
             }
 
             for (let event of events) {
@@ -177,7 +175,7 @@ module.exports = {
 
                 getAllEvents.push(eventList);
             }
-            res.status(200).json({ getAllEvents, warningMessage });
+            res.status(200).json({ getAllEvents });
         } catch (error) {
             res.status(403).json({ error: error });
         }

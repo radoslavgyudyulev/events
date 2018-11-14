@@ -4,6 +4,17 @@ const encryption = require('../utilities/encryption');
 const sendMail = require('../utilities/mailSender');
 const checkMethod = require('../utilities/checkMethod');
 const UserData = require('../utilities/UserData');
+const JWT = require('jsonwebtoken');
+const config = require('../config/config');
+
+signToken = (user) => {
+    return JWT.sign({
+        iss: 'RD',
+        sub: user.id,
+        iat: new Date().getTime(),
+        exp: new Date().setTime(new Date().getTime() + 1)
+    }, config.JWTsecret);
+};
 
 module.exports = {
     profile: async (req, res) => {
@@ -32,7 +43,7 @@ module.exports = {
         }
     },
     changePass: async (req, res) => {
-        let currentUserId = req.user.id || req.body.id;
+        let currentUserId = req.user.id;
         let { key, newPassword, confirmedNewPassword } = req.body;
 
         if (!key || !newPassword || !confirmedNewPassword) {
@@ -74,22 +85,23 @@ module.exports = {
             res.status(404).json({ error: error });
         }
     },
-    changeUsername: async (req, res) => {
+    changeData: async (req, res) => {
         let currentUserId = req.user.id;
-        let { newUsername } = req.body;
+        let { newUsername, newEmail } = req.body;
 
-        if (!newUsername) {
+        if (!newUsername && !newEmail) {
             return res.status(200).json({ errorMessage: 'Please send a valid data!' });
         }
 
         try {
-            let currentUser = User.findById(currentUserId);
+            let currentUser = await User.findById(currentUserId);
 
             if (currentUser.method !== 'local') {
                 return res.status(200).json({ errorMessage: 'You can not change you username because your login method is by Facebook of Google!' });
             }
 
-            currentUser.local.username = newUsername;
+            if (newUsername) { currentUser.local.username = newUsername; };
+            if (newEmail) { currentUser.local.email = newEmail; }
 
             await currentUser.save();
 
@@ -159,6 +171,7 @@ module.exports = {
         try {
             let user = await User.findOne({ 'local.email': email });
 
+            const token = signToken(user);
             if (!user) {
                 return res.status(200).json({ errorMessage: 'No user with this email!' });
             }
@@ -189,7 +202,9 @@ module.exports = {
                 }
             }, 900000);
 
-            sendMail(email, 'Secret Key', `WeedohEvents secret key: ${key.toString()}, valid for 15 min!`, res);
+            sendMail(email, 'Secret Key', `WeedohEvents secret key: ${key.toString()}, valid for 15 min!`);
+
+            res.status(200).json({ successMessage: `The secret key was send to ${email}`, token });
 
         } catch (error) {
             res.status(404).json({ error: error });

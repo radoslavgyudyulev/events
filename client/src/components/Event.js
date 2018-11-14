@@ -23,16 +23,16 @@ export default class Event extends Component {
     };
   };
 
+
   render() {
     let { events, joinEvent, leaveEvent, errorMsg, successMsg } = this.props;
-    console.log(events)
     return (
       <div className="container">
         {events
           ?
-          events.map(event => {
+          events.map((event, i) => {
             return (
-              <div key={ event.eventId } className="event-panel mb-5">
+              <div id={ i } key={ event.eventId } className="event-panel mb-5">
                 <ReactTooltip />
                 {event.isPrivate 
                   ?

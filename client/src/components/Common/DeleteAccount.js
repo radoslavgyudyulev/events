@@ -4,8 +4,8 @@ const DeleteAccount = props => {
   const { deleteAccount } = props;
   return (
     <div>
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalConfirmDelete">Delete your Account</button>
-      <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      <button type="button" class="btn peach-gradient btn-md change-data-btn" data-toggle="modal" data-target="#modalConfirmDelet">Delete your Account</button>
+      <div class="modal fade" id="modalConfirmDelet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
    
