@@ -5,20 +5,34 @@ const UserData = require('../utilities/UserData');
 module.exports = {
     findFriends: async (req, res) => {
         const currentUserId = req.user.id;
-        const { limit, skip } = req.body;
+        const { limit } = req.body;
 
-        if (skip < 0 || !limit) {
+        if (!limit) {
             return res.status(200).json({ errorMessage: 'Please send a valid data!' });
         }
  
         try {
+            let allData = await User.find();
+
+            let allDataLength = allData.length;
+
             let currentUser = await User
                 .findById(currentUserId)
                 .populate('requestSend')
                 .populate('friends')
                 .populate('requestGet');
 
-            let usersData = await User.find().skip(skip).limit(limit);
+            let usersData = await User.find().limit(limit);
+
+            let warningMessage;
+
+            if (allDataLength - limit <= 10) {
+                warningMessage = true;
+            }
+
+            if (usersData.length % 10 !== 0) {
+                return res.status(200).json({ errorMessage: 'No more data!' });
+            }
             usersData = usersData.filter(u => u.id !== currentUserId);
  
             for (let i = 0; i < currentUser.friends.length; i++) {
@@ -32,12 +46,6 @@ module.exports = {
             for (let i = 0; i < currentUser.requestGet.length; i++) {
                 usersData = usersData.filter(u => u.id !== currentUser.requestGet[i].id);
             }
-
-            let warningMessage = '';
-
-            if (usersData.length <= 10) {
-                warningMessage = 'There is 10 or less friends be alert!';
-            }
  
             let users = [];
             for (let user of usersData) {
@@ -50,7 +58,11 @@ module.exports = {
                 yourSendedReq.push(checkMethod(user, UserData));
             }
  
-            res.status(200).json({ users, yourSendedReq, warningMessage });
+            if (warningMessage) {
+                return res.status(200).json({ users, yourSendedReq, warningMessage });
+            }
+
+            res.status(200).json({ users, yourSendedReq });
         } catch (error) {
             res.status(403).json({ error: error });
         }

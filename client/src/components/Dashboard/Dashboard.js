@@ -82,23 +82,23 @@ class Dashboard extends Component {
             >
               <TabList>
                 <ReactTooltip />
-                <Tab data-tip="Your Friends" tabFor="yourFriends"><img src="images/friends.png" alt="" srcset=""/>
+                <Tab data-tip="Your Friends" tabFor="yourFriends"><img src="images/friends.png" alt="FRIENDS" />
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Find Friends" tabFor="findFriends"><img src="images/users.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Find Friends" tabFor="findFriends"><img src="images/users.png" alt="USERS" /></Tab>
                 <ReactTooltip />
-                <Tab data-tip="Friends Request" tabFor="friendsRequest"><img src="images/maps-and-flags.png" alt="" srcset=""/> 
+                <Tab data-tip="Friends Request" tabFor="friendsRequest"><img src="images/maps-and-flags.png" alt="REQUEST" /> 
                   <span className="badge badge-success">{ userRequestsLength ? userRequestsLength : '' }</span>
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Your Events" tabFor="yourEvents"><img src="images/event.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Your Events" tabFor="yourEvents"><img src="images/event.png" alt="EVENTS" /></Tab>
                 <ReactTooltip />
-                <Tab data-tip="Events you have been invited" tabFor="eventInvites"><img src="images/invitation.png" alt="" srcset=""/>
+                <Tab data-tip="Events you have been invited" tabFor="eventInvites"><img src="images/invitation.png" alt="INVITES" />
                   <span className="badge badge-success">{eventsRequestsLength ? eventsRequestsLength : ''}</span>
                 </Tab>
                 <ReactTooltip />
-                <Tab data-tip="Create Event" tabFor="makeEvent"><img src="images/calendar2.png" alt="" srcset=""/></Tab>
-                <Tab data-tip="Profile" tabFor="profile"><img src="images/profile.png" alt="" srcset=""/></Tab>
+                <Tab data-tip="Create Event" tabFor="makeEvent"><img src="images/calendar2.png" alt="MAKE EVENT" /></Tab>
+                <Tab data-tip="Profile" tabFor="profile"><img src="images/profile.png" alt="PROFILE" /></Tab>
               </TabList>
 
               <TabPanel tabId="yourFriends">

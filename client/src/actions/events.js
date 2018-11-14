@@ -1,14 +1,8 @@
 import axios from 'axios';
-import { 
-  CREATE_EVENT,
-  GET_ALL_EVENTS,
+import {
   GET_YOUR_EVENTS,
   GET_YOUR_INVITES,
-  INVITES_ANSWER,
-  JOIN_EVENT,
-  LEAVE_EVENT,
-  DELETE_EVENT,
-  EDIT_EVENT
+  DEFAULT
 } from './types';
 
 
@@ -48,19 +42,18 @@ export const createdEvent = (token, data) => {
   };
 };
 
-export const getEvents = (skip, limit) => {
+export const getEvents = (limit) => {
   return async dispatch => {
     try {
       const response = await axios('http://localhost:5000/api/event/getEvents', {
         method : 'POST',
         data : {
-          skip : skip,
           limit : limit
         }
       });
 
       return dispatch({
-        type : GET_ALL_EVENTS,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -152,7 +145,7 @@ export const joinEvent = (token, eventId) => {
       });
 
       return dispatch({
-        type : JOIN_EVENT,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -175,7 +168,7 @@ export const leaveEvent = (token, eventId) => {
       });
 
       return dispatch({
-        type : LEAVE_EVENT,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {

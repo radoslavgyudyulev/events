@@ -7,23 +7,23 @@ const InviteParticipants = props => {
   return (
     <div>
      
-      <div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      <div className="modal fade" id="centralModalSuccess" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-notify modal-success" role="document">
+        <div className="modal-dialog modal-notify modal-success" role="document">
    
-          <div class="modal-content">
+          <div className="modal-content">
      
-            <div class="modal-header">
-              <p class="heading lead">Invite your friends</p>
+            <div className="modal-header">
+              <p className="heading lead">Invite your friends</p>
 
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true" class="white-text">&times;</span>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" className="white-text">&times;</span>
               </button>
             </div>
 
      
-            <div class="modal-body">
-              <div class="text-center">
+            <div className="modal-body">
+              <div className="text-center">
                 { yourFriends.length > 0 
                   ?
                   yourFriends.map(data => {
@@ -47,16 +47,16 @@ const InviteParticipants = props => {
             </div>
 
      
-            <div class="modal-footer justify-content-center">
-              <a type="button" class="btn btn-success waves-effect" data-dismiss="modal">Done</a>
+            <div className="modal-footer justify-content-center">
+              <button type="button" className="btn btn-success waves-effect" data-dismiss="modal">Done</button>
             </div>
           </div>
    
         </div>
       </div>
 
-      <div class="text-center">
-        <a href="" class="btn btn-default btn-rounded" data-toggle="modal" data-target="#centralModalSuccess">Invite <i class="fa fa-eye ml-1"></i></a>
+      <div className="text-center">
+        <button type="button" className="btn btn-default btn-rounded" data-toggle="modal" data-target="#centralModalSuccess">Invite <i className="fa fa-eye ml-1"></i></button>
       </div>
     </div>
   );

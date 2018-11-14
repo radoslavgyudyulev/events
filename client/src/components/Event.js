@@ -6,8 +6,11 @@ import Modal from '../components/Common/Modal';
 
 import NoData from './Common/NoData';
 
-export default class Event extends Component {
+import Auth from './Common/Auth';
 
+import ScrollUpButton from "react-scroll-up-button";
+
+export default class Event extends Component {
   dateSplitter(date) {
     date = date.slice(0, 10);
     return date;
@@ -73,11 +76,16 @@ export default class Event extends Component {
                         <div className="col-lg-3">
                           <div id={ event.eventId }>
                             <cite>{ event.participants.length } of { event.numberOfParticipants } participant</cite><br/>
-                            <img data-tip="Join in this Event!" onClick={joinEvent} src="images/plus.png" alt="ADD" id="add-image-btn"/>
+                            {Auth.isUserAuthenticated()
+                              ?
+                              <img data-tip="Join in this Event!" onClick={joinEvent} src="images/plus.png" alt="ADD" id="add-image-btn"/>
+                              : null }
                             <meter style={{width : '120px'}} value={ event.participants.length } min="0" max={ event.numberOfParticipants }></meter>
                             <ReactTooltip />
-                            <img data-tip="Leave this event!" onClick={leaveEvent} src="images/remove.png" alt="ADD" id="add-image-btn"/>
-                                       
+                            {Auth.isUserAuthenticated()
+                              ?
+                              <img data-tip="Leave this event!" onClick={leaveEvent} src="images/remove.png" alt="ADD" id="add-image-btn"/>
+                              : null }       
                             { errorMsg 
                               ?
                               <div className="alert-danger">{ errorMsg[event.eventId] }</div>
@@ -115,6 +123,7 @@ export default class Event extends Component {
             );
           })
           : null }
+        <ScrollUpButton />
       </div>
     );
   }

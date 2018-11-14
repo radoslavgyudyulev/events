@@ -162,14 +162,14 @@ class MakeEvent extends Component {
                         <div className="card-body">
                           <div className="text-sm-center form-group">
                             <div className="md-form">
-                                <input name="title" onChange={ this.handleInputs } type="text" id="form1" class="form-control"/>
-                                <label for="form1">Title</label>
+                                <input name="title" onChange={ this.handleInputs } type="text" id="form1" className="form-control"/>
+                                <label htmlFor="form1">Title</label>
                             </div>
                            </div>
 
-                            <div class="md-form">
-                                <textarea onChange={ this.handleInputs } name="description"  type="text" id="form10" class="md-textarea form-control" rows="1.9"></textarea>
-                                <label for="form10">Description</label>
+                            <div className="md-form">
+                                <textarea onChange={ this.handleInputs } name="description"  type="text" id="form10" className="md-textarea form-control" rows="1.9"></textarea>
+                                <label htmlFor="form10">Description</label>
                             </div>
                         </div>
                     </div>
@@ -181,9 +181,9 @@ class MakeEvent extends Component {
                     </div>
 
                     <div>
-                        <label class="bs-switch">
+                        <label className="bs-switch">
                         <input onChange={ this.isPrivate } type="checkbox"/>
-                        <span class="slider round"></span>
+                        <span className="slider round"></span>
                         </label>
                     </div>
                    

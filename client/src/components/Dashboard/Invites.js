@@ -38,9 +38,7 @@ class Invites extends Component {
     let token = Auth.getToken();
     let answer = e.target.id;
     let id = e.target.parentNode.id;
-    let invitePanel = document.getElementById(id);
     this.setState({ loading : true });
-    //invitePanel.parentNode.removeChild(invitePanel);
     
     let data = await this.props.invitesAnswer(token, id, answer);
 

@@ -9,6 +9,10 @@ import FriendsList from './FriendsList';
 
 import ReactLoading from 'react-loading';
 
+import NoData from '../Common/NoData';
+
+import ScrollUpButton from "react-scroll-up-button";
+
 
 class FindFriends extends Component {
   constructor(props) {
@@ -19,8 +23,9 @@ class FindFriends extends Component {
       friendList: [],
       friendReq: [],
       limit : 10,
-      skip : 0,
-      loading : false
+      loading : false,
+      errorMessage: '',
+      showMore: true
     };
 
     this.getInputValue = this.getInputValue.bind(this);
@@ -28,10 +33,12 @@ class FindFriends extends Component {
     this.showMoreFriends = this.showMoreFriends.bind(this);
     this.serverSearch = this.serverSearch.bind(this);
     this.clearTheInput = this.clearTheInput.bind(this);
+    this.autoload = this.autoload.bind(this);
   }
 
   componentDidMount() {
     this.handleFriends();
+    this.autoload();
   }
 
   async componentWillReceiveProps(nextProps) {
@@ -41,10 +48,9 @@ class FindFriends extends Component {
   }
 
   async getFriends() {
-    let { skip, limit } = this.state;
+    let { limit } = this.state;
     let token = Auth.getToken();
-    const data = await this.props.findFriends(token, limit, skip);
-
+    const data = await this.props.findFriends(token, limit);
 
     if (this.state.friendReq !== data.payload.yourSendedReq) {
       this.setState({friendList : data.payload.users, 
@@ -68,7 +74,16 @@ class FindFriends extends Component {
     let token = Auth.getToken();
 
     const data = await this.props.findFriends(token, limit, skip);
-    
+
+    if (data.payload.errorMessage) {
+      this.setState({ errorMessage: data.payload.errorMessage });
+    }
+
+    if (data.payload.warningMessage === true) {
+      await this.setState({ showMore: false });
+      console.log(this.state.showMore);
+    }
+
     this.setState({friendList : data.payload.users, 
       friendReq : data.payload.yourSendedReq, 
       loading : false
@@ -90,9 +105,7 @@ class FindFriends extends Component {
     
   }
 
-  async showMoreFriends(e) {
-    e.preventDefault();
-    
+  async showMoreFriends() {
     let { limit } = this.state;
     await this.setState({limit : limit + 10, skip : limit, loading : true});
     await this.handleFriends();
@@ -115,6 +128,22 @@ class FindFriends extends Component {
     this.setState({ inputValue : ''});
     this.handleFriends();
   }
+
+  autoload() {
+    let isAuth = Auth.isUserAuthenticated();
+    if(isAuth) {
+      window.addEventListener('scroll', () => {
+        let div = document.getElementById('scroll');
+        let rect = div.getBoundingClientRect();
+        
+        if (rect.bottom === 568) {
+          if (this.state.showMore) {
+            this.showMoreFriends();
+          }
+        }   
+      });
+    }
+  };
 
 
    
@@ -143,9 +172,12 @@ class FindFriends extends Component {
             <ReactLoading type={'bars'} color={'#343a40'} height={'20%'} width={'15%'} />
           </div>
           :
-          <div className="center">
-            <button className="show-btn btn btn-default btn-rounded" onClick={ this.showMoreFriends }>Show more</button>
-          </div> }
+          <div>
+            <NoData data={ this.state.errorMessage }/>
+          </div>
+        }
+        <div id="scroll"></div>
+        <ScrollUpButton />
       </div>
     );
   }

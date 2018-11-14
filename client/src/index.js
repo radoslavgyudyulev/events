@@ -13,7 +13,6 @@ import Auth from './components/Common/Auth';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
-import Staff from './components/Common/Staff';
 
 ReactDOM.render(
   <Provider store={createStore(reducers, {

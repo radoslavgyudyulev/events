@@ -49,7 +49,6 @@ export const signUp = (data) => {
         Step 4) Save the jwt into localstorage
         */
     try {
-      console.log(data)
       console.log('[ActionCreator] signUp called!');
       const response = await axios.post('http://localhost:5000/api/auth/signup', data);
       console.log('[ActionCreator] signUp dispatched an action!');

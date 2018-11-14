@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Modal, ModalBody, ModalHeader } from 'mdbreact';
+import { Button, Modal, ModalBody, ModalHeader } from 'mdbreact';
 
 import Calendar from 'rc-calendar';
 import 'rc-calendar/assets/index.css';
@@ -79,7 +79,7 @@ class ModalCenter extends React.Component {
     };
     
     this.setState({ loading : true });
-    let response = await this.props.editEvent(token, data);
+    await this.props.editEvent(token, data);
     this.setState({ modal15 : false, loading : false });
   }
 

@@ -143,13 +143,9 @@ module.exports = {
                 .find()
                 .populate('participants')
                 .populate('creator')
-                .skip(skip)
                 .limit(limit)
                 .sort({ dateCreate: -1 });
 
-            if (events.length < 10) {
-                return res.status(200).json({ errorMessage: 'No more data' });
-            }
 
             for (let event of events) {
                 let helper = [];

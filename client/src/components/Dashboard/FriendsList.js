@@ -5,7 +5,7 @@ import Error from '../Common/Error';
 
 
 const FriendsList = props => {
-  const { friendList, friendReq, getInputValue, inputValue, inviteFriends } = props;
+  const { friendList, friendReq, inviteFriends } = props;
   return (
     <div>
       {!friendList
@@ -37,9 +37,9 @@ const FriendsList = props => {
           
           return (
             <ul key={ id } className="list-group">
-              <li id={ id }  class="list-group-item d-flex justify-content-between align-items-center shadow-lg mb-1">
+              <li id={ id }  className="list-group-item d-flex justify-content-between align-items-center shadow-lg mb-1">
                 { friend.username } <small>{ email }</small>
-                <span class="custom-badge badge badge-success badge-pill disabled waves-effect">Request sended!</span>
+                <span className="custom-badge badge badge-success badge-pill disabled waves-effect">Request sended!</span>
               </li>
             </ul>
           );

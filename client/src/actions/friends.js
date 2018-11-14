@@ -2,18 +2,13 @@ import axios from 'axios';
 import { 
   FIND_FRIENDS,
   INVITE_FRIEND,
-  SEND_ANSWER,
-  REMOVE_FRIEND,
-  DELETE_ACCOUNT,
-  GET_PASSWORD_KEY,
-  CHANGE_PASSWORD,
-  SERVER_SEARCH,
   YOUR_FRIENDS,
-  PROFILE_DATA
+  PROFILE_DATA,
+  DEFAULT
 } from './types';
 
 
-export const findFriends = (token, limit, skip) => {
+export const findFriends = (token, limit) => {
   return async dispatch => {
     try {
       const response = await axios('http://localhost:5000/api/user/friends/find', {
@@ -22,8 +17,7 @@ export const findFriends = (token, limit, skip) => {
           "authorization": token
         },
         data : {
-          limit : limit,
-          skip : skip
+          limit : limit
         }
       });
 
@@ -212,7 +206,7 @@ export const getPasswordKey = token => {
       });
 
       return dispatch({
-        type : GET_PASSWORD_KEY,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -238,7 +232,7 @@ export const changePassword = (token, key, newPassword, confirmedNewPassword) =>
       });
 
       return dispatch({
-        type : CHANGE_PASSWORD,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -259,7 +253,7 @@ export const deleteAccount = token => {
       });
 
       return dispatch({
-        type : DELETE_ACCOUNT,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -280,7 +274,7 @@ export const serverSearch = (token, text) => {
       });
 
       return dispatch({
-        type : SERVER_SEARCH,
+        type: DEFAULT,
         payload : response.data
       });
     } catch (error) {
@@ -304,7 +298,7 @@ export const changeData = (token, username, email) => {
         }
       });
 
-      if (data.payload.successMessage) {
+      if (data.data.successMessage) {
         const response = await axios('http://localhost:5000/api/user/profile', {
           method : 'GET',
           headers : {
@@ -328,14 +322,14 @@ export const forgotPassword = (email) => {
   return async dispatch => {
     try {
       const response = await axios('http://localhost:5000/api/user/forgotPass', {
-          method: 'POST',
-          data: {
-            email: email
-          }
+        method: 'POST',
+        data: {
+          email: email
+        }
       });
        
       return dispatch({
-        type: 'DEFAULT',
+        type: DEFAULT,
         payload : response.data
       });
 

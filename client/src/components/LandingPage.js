@@ -16,11 +16,9 @@ class LandingPage extends Component {
       events : [],
       loading : true,
       isParticipant : '',
-      skip : 0,
       limit : 10,
       errorMsg: [],
       successMsg: [],
-      moreData: true
     };
 
     this.joinEvent = this.joinEvent.bind(this);
@@ -32,36 +30,34 @@ class LandingPage extends Component {
 
   componentDidMount() {
     this.getEvents();
+    this.autoload();
   }
    
 
   async getEvents() {
-    let { skip, limit } = this.state;
-    let data = await this.props.getEvents(skip, limit);
-    console.log(data);
-    if (data.payload.errorMessage) {
-      await this.setState({ moreData: false });
-    }
-    this.setState({events : data.payload.getAllEvents, loading : false });
+    let { limit } = this.state;
+    let data = await this.props.getEvents(limit);
+    await this.setState({events : data.payload.getAllEvents, loading : false });
   }
 
   async getMoreResult() {
-    await this.setState({limit : this.state.limit + 10, skip : this.state.limit});
+    await this.setState({limit : this.state.limit + 10});
     await this.getEvents();
   }
 
   autoload() {
-    window.addEventListener('scroll', () => {
-      let div = document.getElementById('scroll');
-      let rect = div.getBoundingClientRect();
+    let isAuth = Auth.isUserAuthenticated();
 
-      if (rect.bottom < 1000 && rect.bottom > 990) {
-        console.log(this.state.moreData);
-        if (this.state.moreData) {
+    if(isAuth) {
+      window.addEventListener('scroll', () => {
+        let div = document.getElementById('scroll');
+        let rect = div.getBoundingClientRect();
+  
+        if (rect.bottom === 568) {
           this.getMoreResult();
-        }
-      }
-    })
+        }   
+      });
+    }
   };
 
   async joinEvent(e) {
@@ -113,7 +109,7 @@ class LandingPage extends Component {
    
   render() {
     const { loading, isParticipant, events } = this.state;
-    this.autoload();
+    
     return (
       <div className="">
         {loading 
@@ -132,11 +128,7 @@ class LandingPage extends Component {
             getEvents={ this.getEvents }
           />
         }
-        {/* { this.state.moreData
-        ?
-          <button onClick={ this.getMoreResult } className="btn btn-success">Show More</button>
-          : null} */}
-          <div id="scroll"></div>
+        <div id="scroll"></div>
       </div>
     );
   }
